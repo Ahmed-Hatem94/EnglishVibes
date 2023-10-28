@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EnglishVibes.Data\EnglishVibes.Data.csproj" />
+    <ProjectReference Include="..\EnglishVibes.Infrastructure\EnglishVibes.Infrastructure.csproj" />
+    <ProjectReference Include="..\EnglishVibes.Service\EnglishVibes.Service.csproj" />
+  </ItemGroup>
+
+</Project>

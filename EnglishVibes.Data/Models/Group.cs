@@ -9,8 +9,8 @@ namespace EnglishVibes.Data.Models
     public class Group
     {
         public int Id { get; set; }
-        public bool ActiveStatus { get; set; }
         public string Level { get; set; }
+        public bool ActiveStatus { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? TimeSlot { get; set; }
         public Guid? InstructorId { get; set; }// Foreign Key

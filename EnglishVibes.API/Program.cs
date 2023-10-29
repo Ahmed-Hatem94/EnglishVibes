@@ -29,11 +29,21 @@ namespace EnglishVibes.API
             //builder.Services.AddIdentity<ApplicationIdentityUser, IdentityRole>()
             //    .AddEntityFrameworkStores<ApplicationDBContext>();
 
-            builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDBContext>();
-
+            builder.Services
+                    .AddDefaultIdentity<ApplicationUser>(options =>
+                    {
+                        options.SignIn.RequireConfirmedAccount = true;
+                        options.Password.RequireNonAlphanumeric = false;
+                        options.Password.RequireLowercase = false;
+                        options.Password.RequireUppercase = false;
+                        options.Password.RequireDigit = false;
+                        options.Password.RequiredLength = 3;
+                    })
+                    .AddEntityFrameworkStores<ApplicationDBContext>();
             builder.Services.AddIdentityCore<Instructor>().AddEntityFrameworkStores<ApplicationDBContext>();
             builder.Services.AddIdentityCore<Student>().AddEntityFrameworkStores<ApplicationDBContext>();
+
+            
 
             var app = builder.Build();
 

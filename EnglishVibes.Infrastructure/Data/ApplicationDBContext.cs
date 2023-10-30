@@ -14,7 +14,7 @@ namespace EnglishVibes.Infrastructure.Data
 {
     public class ApplicationDBContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
     {
-        public ApplicationDBContext() { }
+   
         public ApplicationDBContext(DbContextOptions<ApplicationDBContext> options) : base(options)
         {
         }
@@ -24,10 +24,7 @@ namespace EnglishVibes.Infrastructure.Data
         public DbSet<Group> Groups { get; set; }
         public DbSet<GroupWeekDays> GroupWeekDays { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=EnglishVibesDB;Integrated Security=True;TrustServerCertificate=True");
-        }
+      
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

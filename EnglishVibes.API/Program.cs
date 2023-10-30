@@ -1,6 +1,7 @@
 
 using EnglishVibes.Data.Models;
 using EnglishVibes.Infrastructure.Data;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -45,7 +46,7 @@ namespace EnglishVibes.API
                     .AddEntityFrameworkStores<ApplicationDBContext>();
             builder.Services.AddIdentityCore<Instructor>().AddEntityFrameworkStores<ApplicationDBContext>();
             builder.Services.AddIdentityCore<Student>().AddEntityFrameworkStores<ApplicationDBContext>();
-
+           builder.Services.AddAutoMapper(typeof(Group));    
             #endregion
 
             var app = builder.Build();

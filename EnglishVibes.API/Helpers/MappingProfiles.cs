@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
-
+using EnglishVibes.API.DTO;
+using System.Text.RegularExpressions;
 
 namespace Talabat.APIS.Helpers
 {
@@ -7,8 +8,8 @@ namespace Talabat.APIS.Helpers
 	{
         public MappingProfiles()
         {
-            //CreateMap<Student, WaitinglisyDto>()
-            //    .ForMember(d=>d.,O=>O.MapFrom(s=>s.));
+            CreateMap<Group, InActiveGroupDto>();
+                
         }
     }
 }

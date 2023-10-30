@@ -1,18 +1,17 @@
 ﻿using EnglishVibes.Data.Models;
 using EnglishVibes.Infrastructure.Data;
 using EnglishVibes.Service.DTO;
-using EnglishVibes.Service.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Talabat.APIS.Controllers;
 
 namespace EnglishVibes.API.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class AccountController : ControllerBase
+  
+    public class AccountController : BaseAPIController
     {
         private readonly ApplicationDBContext context;
         private readonly UserManager<ApplicationUser> userManager;

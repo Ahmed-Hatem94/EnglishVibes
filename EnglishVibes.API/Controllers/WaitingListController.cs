@@ -5,12 +5,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Talabat.APIS.Controllers;
 
 namespace EnglishVibes.API.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class WaitingListController : ControllerBase
+
+    public class WaitingListController : BaseAPIController
     {
         private readonly ApplicationDBContext context;
         private readonly UserManager<ApplicationUser> userManager;

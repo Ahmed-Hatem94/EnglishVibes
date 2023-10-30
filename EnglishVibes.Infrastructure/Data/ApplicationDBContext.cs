@@ -17,7 +17,7 @@ namespace EnglishVibes.Infrastructure.Data
    
         public ApplicationDBContext(DbContextOptions<ApplicationDBContext> options) : base(options)
         {
-            // ..
+            
         }
 
         public DbSet<Student> Students { get; set; }

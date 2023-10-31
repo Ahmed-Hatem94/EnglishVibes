@@ -1,4 +1,4 @@
-﻿namespace Talabat.APIS.Errors
+﻿namespace EnglishVibes.API.Errors
 {
 	public class ApiVaildationErrorResponse : ApiResponse
 	{

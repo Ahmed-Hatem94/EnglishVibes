@@ -40,29 +40,30 @@ namespace EnglishVibes.API.Controllers
             return Ok(map.ToList());
         }
 
-        //2-  Action to return Active group ( level ,  student in this group , [ number , names])
-        //[HttpPost]
-        //public async Task<ActionResult<IEnumerable<InActiveGroupDto>>> GetActiveGroup()
-        //{
-        //    var inactiveGroups = await context.Groups.Where(s => !s.ActiveStatus).ToListAsync();
-        //    var map = _mapper.Map<IReadOnlyList<Group>, IReadOnlyList<InActiveGroupDto>>(inactiveGroups);
+       // 2-  Action to return Active group(level , student in this group , [number, names])
+        [HttpGet("Represent")]
+        public async Task<ActionResult<IEnumerable<InActiveGroupDto>>> GetActiveGroup()
+        {
+            var ActiveGroups = await context.Groups.Where(s => s.ActiveStatus).ToListAsync();
+            var map = _mapper.Map<IReadOnlyList<Group>, IReadOnlyList<ActiveGroupDto>>(ActiveGroups);
 
-        //    return Ok(map.ToList());
-        //}
+            return Ok(map.ToList());
+        }
 
 
 
         //3-  Action Complete Group-Data [httpput] (startdate,instructor,timeslot) 
-         [HttpPost("assign")]
+        [HttpPost("assign")]
         public async Task<ActionResult> CompleteGroupData(DateTime StartDate,Instructor instructor, DateTime TimeSlot)
         {
-            var group = await context.Groups.FirstOrDefaultAsync();
+            var group = await context.Groups.FirstOrDefaultAsync(); // we will take group id from form
             group.StartDate = StartDate;
             group.InstructorId = instructor.Id;
             group.TimeSlot = TimeSlot;
 
-            context.Groups.Update(group);
+             context.Groups.Update(group);
 
+           // context.SaveChangesAsync();
             return Ok();
         }
 

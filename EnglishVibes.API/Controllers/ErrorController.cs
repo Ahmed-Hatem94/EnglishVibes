@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Talabat.APIS.Errors;
+using EnglishVibes.API.Errors;
 
-namespace Talabat.APIS.Controllers
+namespace EnglishVibes.API.Controllers
 {
 	[Route("errors/{code}")]
 	[ApiController]

@@ -37,7 +37,48 @@ namespace EnglishVibes.API.Controllers
                 };
                 instructorList.Add(instructorDTO);
             }
-            return instructorList.ToList();
+            return instructorList;
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<InstructorScheduleDTO>> GetInstructorSchedule(Guid id)
+        {
+            var instructor = await context.Instructors
+                .Include(i => i.Groups)
+                .FirstOrDefaultAsync(i => i.Id == id);
+            InstructorScheduleDTO instructorSchedule = new InstructorScheduleDTO()
+            {
+                UserName = instructor.UserName,
+                Email = instructor.Email,
+                PhoneNumber = instructor.PhoneNumber,
+                Groups = instructor.Groups
+            };
+            return instructorSchedule;
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<Instructor>> AddInstructor(InstructorDTO instructorDTO)
+        {
+            if (ModelState.IsValid)
+            {
+                var newInstructor = new Instructor()
+                {
+                    UserName = instructorDTO.UserName,
+                    Email = instructorDTO.Email,
+                    PhoneNumber = instructorDTO.PhoneNumber                    
+                };
+                IdentityResult result = await userManager.CreateAsync(newInstructor);
+                if (result.Succeeded)
+                {
+                    return Ok(new { message = "Instructor Added" });
+                }
+                else
+                {
+                    //ModelState.AddModelError("", result.Errors.FirstOrDefault().Description);
+                    return Problem(result.Errors.FirstOrDefault().Description);
+                }
+            }
+            return BadRequest(ModelState);
         }
     }
 }

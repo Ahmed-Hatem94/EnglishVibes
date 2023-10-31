@@ -10,6 +10,7 @@ namespace EnglishVibes.Data.Models
     {
         public int Id { get; set; }
         public string Level { get; set; }
+        public string StudyPlan { get; set; } // private or group
         public bool ActiveStatus { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? TimeSlot { get; set; }

@@ -9,19 +9,19 @@ using Talabat.APIS.Controllers;
 
 namespace EnglishVibes.API.Controllers
 {
-
-    public class WaitingListController : BaseAPIController
+    
+    public class StudentController : BaseAPIController
     {
         private readonly ApplicationDBContext context;
         private readonly UserManager<ApplicationUser> userManager;
 
-        public WaitingListController(ApplicationDBContext _context, UserManager<ApplicationUser> _userManager)
+        public StudentController(ApplicationDBContext _context, UserManager<ApplicationUser> _userManager)
         {
             context = _context;
             userManager = _userManager;
         }
 
-        [HttpGet]
+        [HttpGet("waitinglist")]
         public async Task<ActionResult<IEnumerable<WaitingListStudentDTO>>> GetWaitingList()
         {
             var inactiveStudents = await context.Students.Where(s => !s.ActiveStatus).ToListAsync();
@@ -38,6 +38,29 @@ namespace EnglishVibes.API.Controllers
                 waitingList.Add(waitingListStudent);
             }
             return waitingList.ToList();
+        }
+
+        [HttpGet("active")]
+        public async Task<ActionResult<IEnumerable<ActiveStudentDTO>>> GetActiveStudents()
+        {
+            var activeStudents = await context.Students.Where(s => s.ActiveStatus).ToListAsync();
+            List<ActiveStudentDTO> activeStudentList = new List<ActiveStudentDTO>();
+            foreach (Student student in activeStudents)
+            {
+                ActiveStudentDTO activeStudent = new ActiveStudentDTO()
+                {
+                    UserName = student.UserName,
+                    Email = student.Email,
+                    PhoneNumber = student.PhoneNumber,
+                    SelectedStudyPlan = student.StudyPlan,
+                    CurrentLevel = student.CurrentLevel,
+                    GroupId = (int)student.GroupId,
+                    PayedAmount = (decimal)student.PayedAmount,
+                    ActiveStatus = student.ActiveStatus
+                };
+                activeStudentList.Add(activeStudent);
+            }
+            return activeStudentList.ToList();
         }
 
         [HttpPut("{id}")]
@@ -62,7 +85,8 @@ namespace EnglishVibes.API.Controllers
                         Group newGroup = new Group()
                         {
                             Level = studentData.Level,
-                            ActiveStatus = true
+                            ActiveStatus = false,
+                            StudyPlan = student.StudyPlan
                         };
                         await context.Groups.AddAsync(newGroup);
                         await context.SaveChangesAsync();
@@ -73,7 +97,7 @@ namespace EnglishVibes.API.Controllers
                     {
                         var matchingGroup = await context.Groups
                                 .SingleOrDefaultAsync(g =>
-                                !g.ActiveStatus &&
+                                g.StudyPlan == "group" &&
                                 g.Level == studentData.Level &&
                                 g.Students.Count < 4);
                         if (matchingGroup == null)
@@ -81,7 +105,8 @@ namespace EnglishVibes.API.Controllers
                             Group newGroup = new Group()
                             {
                                 Level = studentData.Level,
-                                ActiveStatus = false
+                                ActiveStatus = false,
+                                StudyPlan = student.StudyPlan
                             };
                             await context.Groups.AddAsync(newGroup);
                             await context.SaveChangesAsync();
@@ -91,10 +116,10 @@ namespace EnglishVibes.API.Controllers
                         else
                         {
                             student.GroupId = matchingGroup.Id;
-                            if (matchingGroup.Students.Count > 3)
-                            {
-                                matchingGroup.ActiveStatus = true;
-                            }
+                            //if (matchingGroup.Students.Count > 3)
+                            //{
+                            //    matchingGroup.ActiveStatus = true;
+                            //}
                             await context.SaveChangesAsync();
                         }
                     }

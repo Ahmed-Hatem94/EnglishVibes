@@ -10,7 +10,7 @@ namespace EnglishVibes.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class InstructorController : ControllerBase
+    public class InstructorController : BaseAPIController
     {
         private readonly ApplicationDBContext context;
         private readonly UserManager<ApplicationUser> userManager;

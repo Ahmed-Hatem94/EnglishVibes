@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Talabat.APIS.Controllers
+namespace EnglishVibes.API.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]

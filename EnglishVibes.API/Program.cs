@@ -1,6 +1,7 @@
 
 using EnglishVibes.Data.Models;
 using EnglishVibes.Infrastructure.Data;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,6 +14,9 @@ namespace EnglishVibes.API
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            // This method gets called by the runtime. Use this method to add services to the container.
+
+            #region ConfigureServices
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -42,12 +46,16 @@ namespace EnglishVibes.API
                     .AddEntityFrameworkStores<ApplicationDBContext>();
             builder.Services.AddIdentityCore<Instructor>().AddEntityFrameworkStores<ApplicationDBContext>();
             builder.Services.AddIdentityCore<Student>().AddEntityFrameworkStores<ApplicationDBContext>();
-
-            
+           builder.Services.AddAutoMapper(typeof(Group));    
+            #endregion
 
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
+            // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+
+            #region Configure
+
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -61,6 +69,8 @@ namespace EnglishVibes.API
 
 
             app.MapControllers();
+
+            #endregion
 
             app.Run();
         }

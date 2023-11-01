@@ -8,5 +8,7 @@ namespace EnglishVibes.API.Controllers
 	public class BaseAPIController : ControllerBase
 	{
 
+
+
 	}
 }

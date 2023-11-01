@@ -1,4 +1,5 @@
-﻿using EnglishVibes.Data.Models;
+﻿using EnglishVibes.API.DTO;
+using EnglishVibes.Data.Models;
 using EnglishVibes.Infrastructure.Data;
 using EnglishVibes.Service.DTO;
 using Microsoft.AspNetCore.Http;
@@ -33,7 +34,7 @@ namespace EnglishVibes.API.Controllers
 
   
         // POST: api/Account/register
-        [HttpPost("register")]
+        [HttpPost("register/student")]
         public async Task<ActionResult<Student>> RegisterStudent(RegisterStudentDTO studentDTO)
         {
 
@@ -54,14 +55,49 @@ namespace EnglishVibes.API.Controllers
                     return Ok(new { message = "Thank You For your registration. We will contact you shortly" });
                 }
                 else
-                {  
-                    return Problem(result.Errors.FirstOrDefault().Description);
+                {
+                    foreach (var item in result.Errors)
+                    {
+                        ModelState.AddModelError("", item.Description);
+                    }
                 }
             }
             return BadRequest(ModelState);
-            
         }
-    
+
+
+        [HttpPost("register/admin")]
+        public async Task<ActionResult<Student>> RegisterAdmin(RegisterAdminDTO adminDTO)
+        {
+
+            if (ModelState.IsValid)
+            {
+                var newAdmin = new ApplicationUser()
+                {
+                    UserName = adminDTO.UserName,
+                    Email = adminDTO.Email,
+                    PasswordHash = adminDTO.Password,
+                    PhoneNumber = adminDTO.PhoneNumber
+                };
+                IdentityResult result = await userManager.CreateAsync(newAdmin, adminDTO.Password);
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(newAdmin, "admin");
+                    return Ok(new { message = "Admin Registered" });
+                }
+                else
+                {
+                    foreach (var item in result.Errors)
+                    {
+                        ModelState.AddModelError("", item.Description);
+                    }
+                }
+            }
+            return BadRequest(ModelState);
+        }
+
+
+
         // POST: api/Account/login
         [HttpPost("login")]
         public async Task<ActionResult<Student>> Login(UserLoginDTO userLoginDTO)
@@ -74,12 +110,22 @@ namespace EnglishVibes.API.Controllers
                 if (appUser != null)
                 {
                     bool found = await userManager.CheckPasswordAsync(appUser, userLoginDTO.Password);
-                    if(found ==true)
+                    if(found)
                     {
+                        var roles = await userManager.GetRolesAsync(appUser);
                         // generate token
                         //1-create claims Name and Role 
-                        List <Claim> claims = new List<Claim>();
-                        claims.Add(new Claim(ClaimTypes.Name, appUser.UserName));
+                        List<Claim> claims = new List<Claim>
+                        {
+                            new Claim(ClaimTypes.Name, appUser.UserName)
+                        };
+                        if(roles != null)
+                        {
+                            foreach (var itemRole in roles)
+                            {
+                                claims.Add(new Claim(ClaimTypes.Role, itemRole));
+                            }
+                        }
                         //claims.Add(new Claim(ClaimTypes.NameIdentifier, appUser.Id));
                         if (appUser.Id != null)
                          {
@@ -90,14 +136,7 @@ namespace EnglishVibes.API.Controllers
                             // Handle the case when appUser.Id is null, such as logging an error or taking appropriate action.
                         }
                         claims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
-                        //var roles = await userManager.GetRolesAsync(appUser);
-                        //if(roles != null)
-                        // {
-                        //     foreach(var itemRole in roles) 
-                        //     {
-                        //         claims.Add(new Claim(ClaimTypes.Role, itemRole));
-                        //     }
-                        // }
+                        
                         //2- create security key
                         SecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["jwt:key"]));
                         //3- signing credentials
@@ -114,6 +153,8 @@ namespace EnglishVibes.API.Controllers
                         return Ok(
                             new
                             {
+                                username = userLoginDTO.UserName,
+                                role = roles,
                                 token= new JwtSecurityTokenHandler().WriteToken(myToken),
                                 expiration=myToken.ValidTo
                             });

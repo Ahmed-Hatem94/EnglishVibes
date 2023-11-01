@@ -74,8 +74,10 @@ namespace EnglishVibes.API.Controllers
                 }
                 else
                 {
-                    //ModelState.AddModelError("", result.Errors.FirstOrDefault().Description);
-                    return Problem(result.Errors.FirstOrDefault().Description);
+                    foreach (var item in result.Errors)
+                    {
+                        ModelState.AddModelError("", item.Description);
+                    }
                 }
             }
             return BadRequest(ModelState);

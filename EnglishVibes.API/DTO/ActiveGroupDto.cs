@@ -1,18 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using EnglishVibes.Data.Models;
 
-namespace EnglishVibes.Data.Models
+namespace EnglishVibes.API.DTO
 {
-    public class Group
+    public class ActiveGroupDto
     {
         public int Id { get; set; }
         public string Level { get; set; }
-        public string StudyPlan { get; set; } // private or group
-        public bool ActiveStatus { get; set; }
-        public DateTime? StartDate { get; set; }
         public DateTime? TimeSlot { get; set; }
         public Guid? InstructorId { get; set; }// Foreign Key
         public Instructor? Instructor { get; set; }  // Navigational property [One]

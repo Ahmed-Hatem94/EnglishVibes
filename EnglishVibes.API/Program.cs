@@ -1,6 +1,7 @@
 
 using EnglishVibes.Data.Models;
 using EnglishVibes.Infrastructure.Data;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -11,11 +12,14 @@ namespace EnglishVibes.API
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            // This method gets called by the runtime. Use this method to add services to the container.
+
+            #region ConfigureServices
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -45,6 +49,19 @@ namespace EnglishVibes.API
                     .AddEntityFrameworkStores<ApplicationDBContext>();
             builder.Services.AddIdentityCore<Instructor>().AddEntityFrameworkStores<ApplicationDBContext>();
             builder.Services.AddIdentityCore<Student>().AddEntityFrameworkStores<ApplicationDBContext>();
+           builder.Services.AddAutoMapper(typeof(Group));    
+            #endregion
+
+            var app = builder.Build();
+            // new feature
+            using var scope = app.Services.CreateScope();
+
+            var services = scope.ServiceProvider;
+
+            var _dbContext = services.GetRequiredService<ApplicationDBContext>(); // Ask CLR For Creating Object Form ApplicationDBContext Class
+
+
+            var loggerFactory = services.GetRequiredService<ILoggerFactory>();
 
             // service of check Token 
             //authentication services
@@ -69,9 +86,14 @@ namespace EnglishVibes.API
             });
 
 
-            var app = builder.Build();
+                logger.LogError(ex, "an error Has occured during apply the migration ");
+            }
 
             // Configure the HTTP request pipeline.
+            // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+
+            #region Configure
+
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -85,6 +107,8 @@ namespace EnglishVibes.API
 
 
             app.MapControllers();
+
+            #endregion
 
             app.Run();
         }

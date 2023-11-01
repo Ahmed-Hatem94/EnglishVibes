@@ -33,7 +33,7 @@ namespace EnglishVibes.API
             });
 
             // Register Identity Manager
-            //builder.Services.AddIdentity<ApplicationIdentityUser, IdentityRole>()
+            //builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
             //    .AddEntityFrameworkStores<ApplicationDBContext>();
 
             builder.Services
@@ -46,10 +46,34 @@ namespace EnglishVibes.API
                         options.Password.RequireDigit = false;
                         options.Password.RequiredLength = 3;
                     })
+                    .AddRoles<IdentityRole<Guid>>() // Don't forget the generic datatype Guid
                     .AddEntityFrameworkStores<ApplicationDBContext>();
             builder.Services.AddIdentityCore<Instructor>().AddEntityFrameworkStores<ApplicationDBContext>();
             builder.Services.AddIdentityCore<Student>().AddEntityFrameworkStores<ApplicationDBContext>();
-           builder.Services.AddAutoMapper(typeof(Group));    
+            builder.Services.AddAutoMapper(typeof(Group));
+
+            // service of check Token 
+            //authentication services
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultForbidScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.SaveToken = true;
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer = builder.Configuration["jwt:issuer"],
+                    ValidateAudience = true,
+                    ValidAudience = builder.Configuration["jwt:audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["jwt:key"]))
+
+                };
+            });
+
             #endregion
 
             var app = builder.Build();
@@ -76,27 +100,7 @@ namespace EnglishVibes.API
                 logger.LogError(ex, "an error Has occured during apply the migration ");
             }
 
-            // service of check Token 
-            //authentication services
-            builder.Services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultForbidScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(options =>
-            {
-                options.SaveToken = true;
-                options.RequireHttpsMetadata = false;
-                options.TokenValidationParameters = new TokenValidationParameters()
-                {
-                    ValidateIssuer = true,
-                    ValidIssuer= builder.Configuration["jwt:issuer"],
-                    ValidateAudience = true,
-                    ValidAudience = builder.Configuration["jwt:audience"],
-                    IssuerSigningKey= new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["jwt:key"]))
-
-                };
-            });
+            
 
 
 

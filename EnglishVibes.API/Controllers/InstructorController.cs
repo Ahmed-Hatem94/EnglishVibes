@@ -80,5 +80,18 @@ namespace EnglishVibes.API.Controllers
             }
             return BadRequest(ModelState);
         }
+
+        [HttpDelete]
+        public async Task<ActionResult<Instructor>> RemoveInstructor(Guid id)
+        {
+            var instructor = await context.Instructors.FindAsync(id);
+            if (instructor == null)
+            {
+                return NotFound();
+            }
+            context.Instructors.Remove(instructor);
+            await context.SaveChangesAsync();
+            return Ok();
+        }
     }
 }

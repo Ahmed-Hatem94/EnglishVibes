@@ -52,17 +52,17 @@ namespace EnglishVibes.API.Controllers
 
 
         //3-  Action Complete Group-Data [httpput] (startdate,instructor,timeslot) 
-        [HttpPost("assign")]
-        public async Task<ActionResult> CompleteGroupData(DateTime StartDate, Instructor instructor, DateTime TimeSlot)
+        [HttpPost("{id}")]
+        public async Task<ActionResult> CompleteGroupData(int id, DateTime StartDate, Guid instructorId, DateTime TimeSlot, DayOfWeek d1, DayOfWeek d2)
         {
-            var group = await context.Groups.FirstOrDefaultAsync(); // we will take group id from form
+            var group = await context.Groups.FindAsync(id); // we will take group id from form
             group.StartDate = StartDate;
-            group.InstructorId = instructor.Id;
+            group.InstructorId = instructorId;
             group.TimeSlot = TimeSlot;
-
-            context.Groups.Update(group);
-
-            // context.SaveChangesAsync();
+            group.GroupWeekDays.Add(new GroupWeekDays { GroupId = id, WeekDay = d1});
+            group.GroupWeekDays.Add(new GroupWeekDays { GroupId = id, WeekDay = d2});
+            context.Groups.Update(group);                        
+            await context.SaveChangesAsync();
             return Ok();
         }
 

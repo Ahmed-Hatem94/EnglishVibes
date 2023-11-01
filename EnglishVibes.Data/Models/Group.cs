@@ -16,6 +16,7 @@ namespace EnglishVibes.Data.Models
         public DateTime? TimeSlot { get; set; }
         public Guid? InstructorId { get; set; }// Foreign Key
         public Instructor? Instructor { get; set; }  // Navigational property [One]
+        public ICollection<GroupWeekDays>? GroupWeekDays { get; set; } = new List<GroupWeekDays>(); // Navigational property [Many]
         public ICollection<Student>? Students { get; set; } // Navigational property [Many]
     }
 }

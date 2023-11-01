@@ -2,8 +2,11 @@
 using EnglishVibes.Data.Models;
 using EnglishVibes.Infrastructure.Data;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace EnglishVibes.API
 {
@@ -64,14 +67,38 @@ namespace EnglishVibes.API
             {
 
                 await _dbContext.Database.MigrateAsync();       // Update Database 
-              //  await ApplicationDBContext.SeedAsync(_dbContext);    // Data Seeding
+                //  await ApplicationDBContext.SeedAsync(_dbContext);         //  await ApplicationDBContext.SeedAsync(_dbContext);    // Data Seeding
             }
             catch (Exception ex)
             {
                 var logger = loggerFactory.CreateLogger<Program>();
 
-                logger.LogError(ex, "an error Has occured during apply the migration ");
+                logger.LogError(ex, "an error Has occured during apply the migration ");
             }
+
+            // service of check Token 
+            //authentication services
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultForbidScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.SaveToken = true;
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer= builder.Configuration["jwt:issuer"],
+                    ValidateAudience = true,
+                    ValidAudience = builder.Configuration["jwt:audience"],
+                    IssuerSigningKey= new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["jwt:key"]))
+
+                };
+            });
+
+
 
             // Configure the HTTP request pipeline.
             // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

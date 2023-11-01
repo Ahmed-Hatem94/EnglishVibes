@@ -9,7 +9,7 @@ namespace EnglishVibes.API
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -50,6 +50,28 @@ namespace EnglishVibes.API
             #endregion
 
             var app = builder.Build();
+            // new feature
+            using var scope = app.Services.CreateScope();
+
+            var services = scope.ServiceProvider;
+
+            var _dbContext = services.GetRequiredService<ApplicationDBContext>(); // Ask CLR For Creating Object Form ApplicationDBContext Class
+
+
+            var loggerFactory = services.GetRequiredService<ILoggerFactory>();
+
+            try
+            {
+
+                await _dbContext.Database.MigrateAsync();       // Update Database 
+              //  await ApplicationDBContext.SeedAsync(_dbContext);    // Data Seeding
+            }
+            catch (Exception ex)
+            {
+                var logger = loggerFactory.CreateLogger<Program>();
+
+                logger.LogError(ex, "an error Has occured during apply the migration ");
+            }
 
             // Configure the HTTP request pipeline.
             // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

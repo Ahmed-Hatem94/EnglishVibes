@@ -1,8 +1,11 @@
 
 using EnglishVibes.Data.Models;
 using EnglishVibes.Infrastructure.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace EnglishVibes.API
 {
@@ -43,7 +46,28 @@ namespace EnglishVibes.API
             builder.Services.AddIdentityCore<Instructor>().AddEntityFrameworkStores<ApplicationDBContext>();
             builder.Services.AddIdentityCore<Student>().AddEntityFrameworkStores<ApplicationDBContext>();
 
-            
+            // service of check Token 
+            //authentication services
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultForbidScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.SaveToken = true;
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer= builder.Configuration["jwt:issuer"],
+                    ValidateAudience = true,
+                    ValidAudience = builder.Configuration["jwt:audience"],
+                    IssuerSigningKey= new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["jwt:key"]))
+
+                };
+            });
+
 
             var app = builder.Build();
 

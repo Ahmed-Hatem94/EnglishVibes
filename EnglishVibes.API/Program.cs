@@ -63,6 +63,19 @@ namespace EnglishVibes.API
 
             var loggerFactory = services.GetRequiredService<ILoggerFactory>();
 
+            try
+            {
+
+                await _dbContext.Database.MigrateAsync();       // Update Database 
+                //  await ApplicationDBContext.SeedAsync(_dbContext);         //  await ApplicationDBContext.SeedAsync(_dbContext);    // Data Seeding
+            }
+            catch (Exception ex)
+            {
+                var logger = loggerFactory.CreateLogger<Program>();
+
+                logger.LogError(ex, "an error Has occured during apply the migration ");
+            }
+
             // service of check Token 
             //authentication services
             builder.Services.AddAuthentication(options =>
@@ -86,8 +99,6 @@ namespace EnglishVibes.API
             });
 
 
-                logger.LogError(ex, "an error Has occured during apply the migration ");
-            }
 
             // Configure the HTTP request pipeline.
             // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

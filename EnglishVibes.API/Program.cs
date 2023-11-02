@@ -45,6 +45,7 @@ namespace EnglishVibes.API
                         options.Password.RequireUppercase = false;
                         options.Password.RequireDigit = false;
                         options.Password.RequiredLength = 3;
+                        options.User.RequireUniqueEmail = true;
                     })
                     .AddRoles<IdentityRole<Guid>>() // Don't forget the generic datatype Guid
                     .AddEntityFrameworkStores<ApplicationDBContext>();

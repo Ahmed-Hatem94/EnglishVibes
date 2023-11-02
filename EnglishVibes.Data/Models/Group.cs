@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,6 +11,8 @@ namespace EnglishVibes.Data.Models
     {
         public int Id { get; set; }
         public string Level { get; set; }
+
+        [RegularExpression("^(private|group)$")]
         public string StudyPlan { get; set; } // private or group
         public bool ActiveStatus { get; set; }
         public DateTime? StartDate { get; set; }

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,6 +11,14 @@ namespace EnglishVibes.Service.DTO
 {
     public class RegisterStudentDTO
     {
+        [Column(TypeName = "nvarchar(20)")]
+        public string FirstName { get; set; }
+
+        [Column(TypeName = "nvarchar(20)")]
+        public string LastName { get; set; }
+
+        [Range(16, 80)]
+        public int Age { get; set; }
         public string UserName { get; set; }
 
         [Required]
@@ -24,6 +33,8 @@ namespace EnglishVibes.Service.DTO
 
         [Phone]
         public string PhoneNumber { get; set; }
-        public string? StudyPlan { get; set; }
+
+        [RegularExpression("^(private|group)$")]
+        public string StudyPlan { get; set; }
     }
 }

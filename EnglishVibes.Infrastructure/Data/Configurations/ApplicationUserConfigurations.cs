@@ -13,7 +13,6 @@ namespace EnglishVibes.Infrastructure.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<ApplicationUser> builder)
         {
-            //builder.HasMany(u => u.UserRoles).WithOne(x => x.).HasForeignKey(c => c.UserId).IsRequired().OnDelete(DeleteBehavior.Cascade);
             builder.HasMany<ApplicationUserRole>(au => au.UserRoles)
                     .WithOne(aur => aur.ApplicationUser)
                     .HasForeignKey(au => au.UserId)

@@ -104,9 +104,16 @@ namespace EnglishVibes.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                
-                ApplicationUser appUser = await userManager.FindByNameAsync(userLoginDTO.UserName);
-                
+                ApplicationUser appUser;
+                if (userLoginDTO.UserName != null)
+                {
+                    appUser = await userManager.FindByNameAsync(userLoginDTO.UserName);
+                }
+                else
+                {
+                    appUser = await userManager.FindByEmailAsync(userLoginDTO.Email);
+                }
+                                    
                 if (appUser != null)
                 {
                     bool found = await userManager.CheckPasswordAsync(appUser, userLoginDTO.Password);

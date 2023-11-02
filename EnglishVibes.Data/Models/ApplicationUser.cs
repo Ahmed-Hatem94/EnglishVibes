@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
@@ -10,14 +11,14 @@ namespace EnglishVibes.Data.Models
 {
     public class ApplicationUser : IdentityUser<Guid>
     {
-        //public ApplicationUser() : base()
-        //{
-        //    UserRoles = new HashSet<IdentityUserRole<Guid>>();
-        //}
+        [Column(TypeName = "nvarchar(20)")]
+        public string FirstName { get; set; }
 
-        //[InverseProperty("User")]
+        [Column(TypeName = "nvarchar(20)")]
+        public string LastName { get; set; }
+
+        [Range(16, 80)]
+        public int Age { get; set; }
         public ICollection<ApplicationUserRole>? UserRoles { get; set; }
-
-        //public ICollection<Group>? Groups { get; set; }
     }
 }

@@ -55,7 +55,7 @@ namespace EnglishVibes.API.Controllers
                 IdentityResult result = await userManager.CreateAsync(newStudent, studentDTO.Password);
                 if (result.Succeeded)
                 {
-                    return Ok(new { message = "Thank You For your registration. We will contact you shortly" });
+                    return Ok(new { message = "success" });
                 }
                 else
                 {

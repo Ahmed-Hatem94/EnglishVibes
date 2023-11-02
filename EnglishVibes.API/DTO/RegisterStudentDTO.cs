@@ -12,13 +12,20 @@ namespace EnglishVibes.Service.DTO
     public class RegisterStudentDTO
     {
         [Column(TypeName = "nvarchar(20)")]
+        [MinLength(3)]
+        [MaxLength(20)]
         public string FirstName { get; set; }
 
         [Column(TypeName = "nvarchar(20)")]
+        [MinLength(3)]
+        [MaxLength(20)]
         public string LastName { get; set; }
 
         [Range(16, 80)]
         public int? Age { get; set; }
+
+        [MinLength(3)]
+        [MaxLength(20)]
         public string? UserName { get; set; }
 
         [Required]

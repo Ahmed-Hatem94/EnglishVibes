@@ -18,8 +18,8 @@ namespace EnglishVibes.Service.DTO
         public string LastName { get; set; }
 
         [Range(16, 80)]
-        public int Age { get; set; }
-        public string UserName { get; set; }
+        public int? Age { get; set; }
+        public string? UserName { get; set; }
 
         [Required]
         [EmailAddress]

@@ -42,6 +42,9 @@ namespace EnglishVibes.API.Controllers
             {
                 var newStudent = new Student()
                 {
+                    FirstName = studentDTO.FirstName,
+                    LastName = studentDTO.LastName,
+                    Age = 20,
                     UserName = studentDTO.UserName,
                     Email = studentDTO.Email,
                     PasswordHash = studentDTO.Password,
@@ -157,6 +160,7 @@ namespace EnglishVibes.API.Controllers
                         return Ok(
                             new
                             {
+                                message = "success",
                                 username = userLoginDTO.UserName,
                                 role = roles,
                                 token= new JwtSecurityTokenHandler().WriteToken(myToken),

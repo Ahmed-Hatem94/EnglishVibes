@@ -14,6 +14,7 @@ namespace EnglishVibes.API
     {
         public static async Task Main(string[] args)
         {
+            string corsPolicy = "";
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
@@ -75,6 +76,17 @@ namespace EnglishVibes.API
                 };
             });
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy(corsPolicy,
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin();
+                        builder.AllowAnyMethod();
+                        builder.AllowAnyHeader();
+                    });
+            });
+
             #endregion
 
             var app = builder.Build();
@@ -120,7 +132,7 @@ namespace EnglishVibes.API
 
             app.UseAuthentication(); // not required in .Net 7
             app.UseAuthorization();
-
+            app.UseCors(corsPolicy);
 
             app.MapControllers();
 

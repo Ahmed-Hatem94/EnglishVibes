@@ -70,6 +70,7 @@ namespace EnglishVibes.API.Controllers
                 IdentityResult result = await userManager.CreateAsync(newInstructor);
                 if (result.Succeeded)
                 {
+                    await userManager.AddToRoleAsync(newInstructor, "instructor");
                     return Ok(new { message = "Instructor Added" });
                 }
                 else

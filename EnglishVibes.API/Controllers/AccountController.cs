@@ -55,6 +55,7 @@ namespace EnglishVibes.API.Controllers
                 IdentityResult result = await userManager.CreateAsync(newStudent, studentDTO.Password);
                 if (result.Succeeded)
                 {
+                    await userManager.AddToRoleAsync(newStudent, "student");
                     return Ok(new { message = "success" });
                 }
                 else

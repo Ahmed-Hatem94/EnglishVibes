@@ -8,6 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using EnglishVibes.Infrastructure.Seeder;
+using AutoMapper;
+using EnglishVibes.API.DTO;
+using EnglishVibes.API.Helpers;
 
 namespace EnglishVibes.API
 {
@@ -55,7 +58,9 @@ namespace EnglishVibes.API
                     .AddEntityFrameworkStores<ApplicationDBContext>();
             builder.Services.AddIdentityCore<Instructor>().AddEntityFrameworkStores<ApplicationDBContext>();
             builder.Services.AddIdentityCore<Student>().AddEntityFrameworkStores<ApplicationDBContext>();
-            builder.Services.AddAutoMapper(typeof(Group));
+            builder.Services.AddAutoMapper(typeof(InActiveGroupMappingProfile));
+            builder.Services.AddAutoMapper(typeof(ActiveGroupMappingProfile));
+
 
 
             // Register Authentication services / Token-checking

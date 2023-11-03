@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Elfie.Serialization;
 using EnglishVibes.API.DTO;
 using EnglishVibes.Data.Models;
 using EnglishVibes.Infrastructure.Data;
@@ -34,7 +35,8 @@ namespace EnglishVibes.API.Controllers
         public async Task<ActionResult<IEnumerable<InActiveGroupDto>>> GetInActiveGroup()
         {
             var inactiveGroups = await context.Groups.Where(s => !s.ActiveStatus).ToListAsync();
-            var map = _mapper.Map<IReadOnlyList<Group>, IReadOnlyList<InActiveGroupDto>>(inactiveGroups);
+           // var destination = Mapper.Map<DestinationType>(source);
+            var map = _mapper.Map<IEnumerable<Group>, IEnumerable<InActiveGroupDto>>(inactiveGroups);
 
             return Ok(map.ToList());
         }

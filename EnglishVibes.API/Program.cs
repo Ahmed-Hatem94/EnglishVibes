@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using EnglishVibes.Infrastructure.Seeder;
 
 namespace EnglishVibes.API
 {
@@ -14,29 +15,31 @@ namespace EnglishVibes.API
     {
         public static async Task Main(string[] args)
         {
-            string corsPolicy = "";
+            // CORS Policy Name To Allow Cross-domain Requests
+            string corsPolicyName = "";
+
             var builder = WebApplication.CreateBuilder(args);
+
+
+            #region Register/Configure Services
 
             // Add services to the container.
             // This method gets called by the runtime. Use this method to add services to the container.
-
-            #region ConfigureServices
-
             builder.Services.AddControllers();
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            // Connection To SQL Server
+            // Register DbContext Service
+            // Configure Connection To SQL Server
             builder.Services.AddDbContext<ApplicationDBContext>(option =>
             {
                 option.UseSqlServer(builder.Configuration.GetConnectionString("DBCS"));
             });
 
-            // Register Identity Manager
-            //builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-            //    .AddEntityFrameworkStores<ApplicationDBContext>();
 
+            // Register Identity Manager Service
             builder.Services
                     .AddDefaultIdentity<ApplicationUser>(options =>
                     {
@@ -54,8 +57,8 @@ namespace EnglishVibes.API
             builder.Services.AddIdentityCore<Student>().AddEntityFrameworkStores<ApplicationDBContext>();
             builder.Services.AddAutoMapper(typeof(Group));
 
-            // service of check Token 
-            //authentication services
+
+            // Register Authentication services / Token-checking
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -76,9 +79,11 @@ namespace EnglishVibes.API
                 };
             });
 
+            
+            // CORS Service To Allow Cross-domain Requests
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy(corsPolicy,
+                options.AddPolicy(corsPolicyName,
                     builder =>
                     {
                         builder.AllowAnyOrigin();
@@ -90,38 +95,37 @@ namespace EnglishVibes.API
             #endregion
 
             var app = builder.Build();
-            // new feature
-            using var scope = app.Services.CreateScope();
 
-            var services = scope.ServiceProvider;
-
-            var _dbContext = services.GetRequiredService<ApplicationDBContext>(); // Ask CLR For Creating Object Form ApplicationDBContext Class
-
-
-            var loggerFactory = services.GetRequiredService<ILoggerFactory>();
-
-            try
+            #region Auto Database Creation & Data Seeding
+            using (var scope = app.Services.CreateScope())
             {
+                // Ask CLR For Creating Object From UserManager, RoleManager, and ApplicationDBContext Classes
+                var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
+                var _dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDBContext>();
+                var loggerFactory = scope.ServiceProvider.GetRequiredService<ILoggerFactory>();
 
-                await _dbContext.Database.MigrateAsync();       // Update Database 
-                //  await ApplicationDBContext.SeedAsync(_dbContext);         //  await ApplicationDBContext.SeedAsync(_dbContext);    // Data Seeding
+                try
+                {
+                    await _dbContext.Database.MigrateAsync();            // Update Database
+                    await RoleSeeder.SeedAsync(roleManager);
+                    await UserSeeder.SeedAsync(userManager);
+                    //await ApplicationDBContext.SeedAsync(_dbContext);  // Data Seeding
+                }
+                catch (Exception ex)
+                {
+                    var logger = loggerFactory.CreateLogger<Program>();
+
+                    logger.LogError(ex, "an error Has occured during apply the migration");
+                }
             }
-            catch (Exception ex)
-            {
-                var logger = loggerFactory.CreateLogger<Program>();
-
-                logger.LogError(ex, "an error Has occured during apply the migration ");
-            }
-
-            
+            #endregion
 
 
+            #region Configure Middleware
 
             // Configure the HTTP request pipeline.
             // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-
-            #region Configure
-
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -132,7 +136,9 @@ namespace EnglishVibes.API
 
             app.UseAuthentication(); // not required in .Net 7
             app.UseAuthorization();
-            app.UseCors(corsPolicy);
+
+            // Allow Cross-domain Requests
+            app.UseCors(corsPolicyName);
 
             app.MapControllers();
 

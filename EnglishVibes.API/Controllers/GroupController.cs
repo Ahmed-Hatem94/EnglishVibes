@@ -30,7 +30,7 @@ namespace EnglishVibes.API.Controllers
         // what should i do :- 
 
         //1-  Action to return inactive group (level , student in this group [ number , names]) 
-        [HttpGet]
+        [HttpGet("inactive")]
         public async Task<ActionResult<IEnumerable<InActiveGroupDto>>> GetInActiveGroup()
         {
             var inactiveGroups = await context.Groups.Where(s => !s.ActiveStatus).ToListAsync();
@@ -40,7 +40,7 @@ namespace EnglishVibes.API.Controllers
         }
 
         // 2-  Action to return Active group(level , student in this group , [number, names])
-        [HttpGet("Represent")]
+        [HttpGet("active")]
         public async Task<ActionResult<IEnumerable<ActiveGroupDto>>> GetActiveGroup()
         {
             var ActiveGroups = await context.Groups.Where(s => s.ActiveStatus).ToListAsync();

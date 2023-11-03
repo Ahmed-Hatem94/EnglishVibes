@@ -107,13 +107,7 @@ namespace EnglishVibes.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                ApplicationUser appUser;
-                appUser = await userManager.FindByNameAsync(userLoginDTO.UserName);
-                if (appUser == null)
-                {
-                    appUser = await userManager.FindByEmailAsync(userLoginDTO.Email);
-                }
-                                    
+                ApplicationUser appUser = await userManager.FindByEmailAsync(userLoginDTO.Email);
                 if (appUser != null)
                 {
                     bool found = await userManager.CheckPasswordAsync(appUser, userLoginDTO.Password);
@@ -161,7 +155,6 @@ namespace EnglishVibes.API.Controllers
                             new
                             {
                                 message = "success",
-                                username = userLoginDTO.UserName,
                                 role = roles,
                                 token= new JwtSecurityTokenHandler().WriteToken(myToken),
                                 expiration=myToken.ValidTo

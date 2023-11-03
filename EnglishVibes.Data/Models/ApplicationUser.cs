@@ -19,6 +19,5 @@ namespace EnglishVibes.Data.Models
 
         [Range(16, 80)]
         public int Age { get; set; }
-        public ICollection<ApplicationUserRole>? UserRoles { get; set; }
     }
 }

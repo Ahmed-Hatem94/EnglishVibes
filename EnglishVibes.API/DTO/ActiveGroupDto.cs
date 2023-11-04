@@ -8,9 +8,9 @@ namespace EnglishVibes.API.DTO
         public string Level { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime TimeSlot { get; set; }
-        public ICollection<GroupWeekDays> GroupWeekDays { get; set; }
+        public List<string> GroupWeekDays { get; set; } = new List<string>();
         public Guid? InstructorId { get; set; }
-        public Instructor? Instructor { get; set; }
-        public ICollection<Student>? Students { get; set; }
+        public string Instructor { get; set; }
+        public List<string> Students { get; set; } = new List<string>();
     }
 }

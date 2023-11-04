@@ -36,17 +36,14 @@ namespace EnglishVibes.API.Controllers
         public async Task<ActionResult<IEnumerable<InActiveGroupDto>>> GetInActiveGroup()
         {
 
-            //var inactiveGroups = await context.Groups.Where(s => !s.ActiveStatus).Include(g => g.Students).ToListAsync();
-            // var destination = Mapper.Map<DestinationType>(source);
-
-            var inactiveGroups = await context.Groups
+            List<Group> inactiveGroups = await context.Groups
                                               .Where(s => !s.ActiveStatus)
-                                              .Include(g=>g.Students)
+                                              .Include(g => g.Students)
                                               .ToListAsync();
 
             var map = _mapper.Map<IEnumerable<Group>, IEnumerable<InActiveGroupDto>>(inactiveGroups);
 
-            return Ok(map.ToList());
+            return Ok(map);
         }
 
         // 2-  Action to return Active group(level , student in this group , [number, names])
@@ -61,7 +58,7 @@ namespace EnglishVibes.API.Controllers
                                             .ToListAsync();
             var map = _mapper.Map<IEnumerable<Group>, IEnumerable<ActiveGroupDto>>(ActiveGroups);
 
-            return Ok(map.ToList());
+            return Ok(map);
         }
 
         [HttpGet("{id}")]
@@ -86,7 +83,7 @@ namespace EnglishVibes.API.Controllers
             }
             else
             {
-                foreach (var instructor in context.Instructors) 
+                foreach (var instructor in context.Instructors)
                 {
                     Group.Instructor.Add(instructor.UserName);
 

@@ -11,7 +11,7 @@ namespace EnglishVibes.Data.Models
     {
         public int GroupId { get; set; }
         public DayOfWeek WeekDay { get; set; }
-        [JsonIgnore]
+       
         public Group? Group { get; set; }
     }
 }

@@ -8,6 +8,6 @@ namespace EnglishVibes.API.DTO
         public string Level { get; set; }
         public string StudyPlan { get; set; } // private or group
         public bool ActiveStatus { get; set; }
-        public ICollection<Student>? Students { get; set; } // Navigational property [Many]
+        public List<string>? Students { get; set; } = new List<string>();  // Navigational property [Many]
     }
 }

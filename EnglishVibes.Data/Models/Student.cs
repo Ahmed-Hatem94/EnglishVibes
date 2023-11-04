@@ -15,7 +15,7 @@ namespace EnglishVibes.Data.Models
         public bool ActiveStatus { get; set; }
         public string? StudyPlan { get; set; }   // Private Or Group
         public int? GroupId { get; set; }        // Foreign Key
-        [JsonIgnore]
+      
         public Group? Group { get; set; }
     }
 }

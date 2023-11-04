@@ -10,7 +10,7 @@ namespace EnglishVibes.Data.Models
     public class Instructor : ApplicationUser
     {
         //public string Id { get; set; }
-        [JsonIgnore]
+       
         public ICollection<Group>? Groups { get; set; }
     }
 }

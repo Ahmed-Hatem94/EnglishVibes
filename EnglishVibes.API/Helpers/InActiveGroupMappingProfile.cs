@@ -8,7 +8,12 @@ namespace EnglishVibes.API.Helpers
     {
         public InActiveGroupMappingProfile()
         {
-            CreateMap<Group, InActiveGroupDto>();
+
+            CreateMap<Group, InActiveGroupDto>()
+           .ForMember(dest => dest.Students, opt => opt.MapFrom(src => src.Students.Select(s => s.UserName)));
+
+
+
         }
 
     }

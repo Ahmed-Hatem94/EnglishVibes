@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace EnglishVibes.API.Controllers
 {
@@ -34,8 +35,8 @@ namespace EnglishVibes.API.Controllers
         [HttpGet("inactive")]
         public async Task<ActionResult<IEnumerable<InActiveGroupDto>>> GetInActiveGroup()
         {
-            var inactiveGroups = await context.Groups.Where(s => !s.ActiveStatus).Include(g=>g.Students).ToListAsync();
-           // var destination = Mapper.Map<DestinationType>(source);
+            var inactiveGroups = await context.Groups.Where(s => !s.ActiveStatus).Include(g => g.Students).ToListAsync();
+            // var destination = Mapper.Map<DestinationType>(source);
             var map = _mapper.Map<IEnumerable<Group>, IEnumerable<InActiveGroupDto>>(inactiveGroups);
 
             return Ok(map.ToList());
@@ -51,6 +52,45 @@ namespace EnglishVibes.API.Controllers
             return Ok(map.ToList());
         }
 
+        [HttpGet("{id}")]
+        public ActionResult<GroupDto> GetGroupById(int id)
+        {
+            var Groups = context.Groups.Include(g => g.Students).Include(g => g.Instructor).FirstOrDefault(n => n.Id == id);
+            //   var map = _mapper.Map<IReadOnlyList<Group>, IReadOnlyList<ActiveGroupDto>>(ActiveGroups);
+            GroupDto Group = new GroupDto()
+            {
+                Id = Groups.Id,
+                Level = Groups.Level,
+                StudyPlan = Groups.StudyPlan,
+                ActiveStatus = Groups.ActiveStatus,
+
+
+                //  Students = Groups.Students.Select(g => g.Id).ToList()
+
+            };
+            if (Groups.ActiveStatus)
+            {
+                Group.Instructor.Add(Groups.Instructor.UserName);
+            }
+            else
+            {
+                foreach (var instructor in context.Instructors) 
+                {
+                    Group.Instructor.Add(instructor.UserName);
+
+                }
+
+            }
+
+            foreach (var s in Groups.Students)
+            {
+                Group.Students.Add(s.FirstName);
+
+            }
+
+            return Ok(Group);
+        }
+
 
 
         //3-  Action Complete Group-Data [httpput] (startdate,instructor,timeslot) 
@@ -61,9 +101,9 @@ namespace EnglishVibes.API.Controllers
             group.StartDate = StartDate;
             group.InstructorId = instructorId;
             group.TimeSlot = TimeSlot;
-            group.GroupWeekDays.Add(new GroupWeekDays { GroupId = id, WeekDay = d1});
-            group.GroupWeekDays.Add(new GroupWeekDays { GroupId = id, WeekDay = d2});
-            context.Groups.Update(group);                        
+            group.GroupWeekDays.Add(new GroupWeekDays { GroupId = id, WeekDay = d1 });
+            group.GroupWeekDays.Add(new GroupWeekDays { GroupId = id, WeekDay = d2 });
+            context.Groups.Update(group);
             await context.SaveChangesAsync();
             return Ok();
         }

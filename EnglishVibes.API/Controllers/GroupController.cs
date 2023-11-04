@@ -34,7 +34,7 @@ namespace EnglishVibes.API.Controllers
         [HttpGet("inactive")]
         public async Task<ActionResult<IEnumerable<InActiveGroupDto>>> GetInActiveGroup()
         {
-            var inactiveGroups = await context.Groups.Where(s => !s.ActiveStatus).ToListAsync();
+            var inactiveGroups = await context.Groups.Include(g=>g.Students).Where(s => !s.ActiveStatus).ToListAsync();
            // var destination = Mapper.Map<DestinationType>(source);
             var map = _mapper.Map<IEnumerable<Group>, IEnumerable<InActiveGroupDto>>(inactiveGroups);
 

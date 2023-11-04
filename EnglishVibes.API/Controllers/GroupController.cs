@@ -35,10 +35,15 @@ namespace EnglishVibes.API.Controllers
         [HttpGet("inactive")]
         public async Task<ActionResult<IEnumerable<InActiveGroupDto>>> GetInActiveGroup()
         {
+
+            //var inactiveGroups = await context.Groups.Where(s => !s.ActiveStatus).Include(g => g.Students).ToListAsync();
+            // var destination = Mapper.Map<DestinationType>(source);
+
             var inactiveGroups = await context.Groups
                                               .Where(s => !s.ActiveStatus)
                                               .Include(g=>g.Students)
                                               .ToListAsync();
+
             var map = _mapper.Map<IEnumerable<Group>, IEnumerable<InActiveGroupDto>>(inactiveGroups);
 
             return Ok(map.ToList());
@@ -91,7 +96,7 @@ namespace EnglishVibes.API.Controllers
 
             foreach (var s in Groups.Students)
             {
-                Group.Students.Add(s.FirstName);
+                Group.Students.Add(s.UserName);
 
             }
 

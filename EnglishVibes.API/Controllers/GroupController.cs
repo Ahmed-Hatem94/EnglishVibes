@@ -45,7 +45,7 @@ namespace EnglishVibes.API.Controllers
         [HttpGet("active")]
         public async Task<ActionResult<IEnumerable<ActiveGroupDto>>> GetActiveGroup()
         {
-            var ActiveGroups = await context.Groups.Where(s => s.ActiveStatus).ToListAsync();
+            var ActiveGroups = await context.Groups.Where(s => s.ActiveStatus).Include(g => g.Students).ToListAsync();
             var map = _mapper.Map<IReadOnlyList<Group>, IReadOnlyList<ActiveGroupDto>>(ActiveGroups);
 
             return Ok(map.ToList());

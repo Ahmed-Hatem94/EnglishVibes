@@ -59,7 +59,7 @@ namespace EnglishVibes.API.Controllers
                                             .Include(g => g.Instructor)
                                             .Include(g => g.GroupWeekDays)
                                             .ToListAsync();
-            var map = _mapper.Map<IReadOnlyList<Group>, IReadOnlyList<ActiveGroupDto>>(ActiveGroups);
+            var map = _mapper.Map<IEnumerable<Group>, IEnumerable<ActiveGroupDto>>(ActiveGroups);
 
             return Ok(map.ToList());
         }

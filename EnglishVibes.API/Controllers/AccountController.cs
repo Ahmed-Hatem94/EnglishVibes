@@ -42,9 +42,7 @@ namespace EnglishVibes.API.Controllers
             {
                 var newStudent = new Student()
                 {
-                    FirstName = studentDTO.FirstName,
-                    LastName = studentDTO.LastName,
-                    Age = 20,
+                    Age = (int)studentDTO.Age,
                     UserName = studentDTO.UserName,
                     Email = studentDTO.Email,
                     PasswordHash = studentDTO.Password,

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace EnglishVibes.Data.Models
@@ -14,6 +15,7 @@ namespace EnglishVibes.Data.Models
         public bool ActiveStatus { get; set; }
         public string? StudyPlan { get; set; }   // Private Or Group
         public int? GroupId { get; set; }        // Foreign Key
+        [JsonIgnore]
         public Group? Group { get; set; }
     }
 }

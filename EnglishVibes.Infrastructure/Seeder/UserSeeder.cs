@@ -20,8 +20,6 @@ namespace EnglishVibes.Infrastructure.Seeder
                 var defaultAdmin = new ApplicationUser()
                 {
                     UserName = "aaa",
-                    FirstName = "aaaaa",
-                    LastName = "aaaaa",
                     Email = "a@a.com",
                     PhoneNumber = "123456",
                     Age = 20
@@ -37,8 +35,6 @@ namespace EnglishVibes.Infrastructure.Seeder
                     defaultInstructor = new Instructor()
                     {
                         UserName = new string(letters[i], 3),
-                        FirstName = new string(letters[i], 5),
-                        LastName = new string(letters[i], 5),
                         Email = $"{letters[i]}@{letters[i]}.com",
                         PhoneNumber = "123456",
                         Age = 20
@@ -56,8 +52,6 @@ namespace EnglishVibes.Infrastructure.Seeder
                     defaultStudent = new Student()
                     {
                         UserName = new string(letters[i], 3),
-                        FirstName = new string(letters[i], 5),
-                        LastName = new string(letters[i], 5),
                         Email = $"{letters[i]}@{letters[i]}.com",
                         PhoneNumber = "123456",
                         Age = 20,

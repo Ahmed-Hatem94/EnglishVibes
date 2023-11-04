@@ -39,7 +39,7 @@ namespace EnglishVibes.API.Controllers
             return waitingList.ToList();
         }
 
-        [HttpGet("active")]
+        [HttpGet("active/all")]
         public async Task<ActionResult<IEnumerable<ActiveStudentDTO>>> GetActiveStudents()
         {
             var activeStudents = await context.Students.Where(s => s.ActiveStatus).ToListAsync();
@@ -60,6 +60,28 @@ namespace EnglishVibes.API.Controllers
                 activeStudentList.Add(activeStudent);
             }
             return activeStudentList.ToList();
+        }
+
+        [HttpGet("active/{id}")]
+        public async Task<ActionResult<ActiveStudentDTO>> GetActiveStudent(Guid id)
+        {
+            var activeStudent = await context.Students.FirstOrDefaultAsync(s => s.ActiveStatus && s.Id == id);
+            if (activeStudent != null)
+            {
+                ActiveStudentDTO activeStudentDTO = new ActiveStudentDTO()
+                {
+                    UserName = activeStudent.UserName,
+                    Email = activeStudent.Email,
+                    PhoneNumber = activeStudent.PhoneNumber,
+                    SelectedStudyPlan = activeStudent.StudyPlan,
+                    CurrentLevel = activeStudent.CurrentLevel,
+                    GroupId = (int)activeStudent.GroupId,
+                    PayedAmount = (decimal)activeStudent.PayedAmount,
+                    ActiveStatus = activeStudent.ActiveStatus
+                };
+                return activeStudentDTO;
+            }
+            return BadRequest();
         }
 
         [HttpPut("{id}")]

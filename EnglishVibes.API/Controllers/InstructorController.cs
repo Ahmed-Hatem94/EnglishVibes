@@ -21,7 +21,7 @@ namespace EnglishVibes.API.Controllers
             userManager = _userManager;
         }
 
-        [HttpGet]
+        [HttpGet("all")]
         public async Task<ActionResult<IEnumerable<InstructorDTO>>> GetAll()
         {
             var instructors = await context.Instructors.ToListAsync();
@@ -40,7 +40,7 @@ namespace EnglishVibes.API.Controllers
             return instructorList;
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("schedule/{id}")]
         public async Task<ActionResult<InstructorScheduleDTO>> GetInstructorSchedule(Guid id)
         {
             var instructor = await context.Instructors

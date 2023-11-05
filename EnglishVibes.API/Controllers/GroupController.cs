@@ -64,40 +64,55 @@ namespace EnglishVibes.API.Controllers
         [HttpGet("{id}")]
         public ActionResult<GroupDto> GetGroupById(int id)
         {
-            var Groups = context.Groups.Include(g => g.Students).Include(g => g.Instructor).FirstOrDefault(n => n.Id == id);
+            var groups = context.Groups.Include(g => g.Students).Include(g => g.Instructor).FirstOrDefault(n => n.Id == id);
             //   var map = _mapper.Map<IReadOnlyList<Group>, IReadOnlyList<ActiveGroupDto>>(ActiveGroups);
-            GroupDto Group = new GroupDto()
+            GroupDto group = new GroupDto()
             {
-                Id = Groups.Id,
-                Level = Groups.Level,
-                StudyPlan = Groups.StudyPlan,
-                ActiveStatus = Groups.ActiveStatus,
+                Id = groups.Id,
+                Level = groups.Level,
+                StudyPlan = groups.StudyPlan,
+                ActiveStatus = groups.ActiveStatus,
 
 
-                //  Students = Groups.Students.Select(g => g.Id).ToList()
+                //  Students = groups.Students.Select(g => g.Id).ToList()
 
             };
-            if (Groups.ActiveStatus)
+            Instructor instructor;
+            if (groups.ActiveStatus)
             {
-                Group.Instructor.Add(Groups.Instructor.UserName);
+                //group.Instructors.Add(groups.Instructor.UserName);
+                instructor = new Instructor()
+                {
+                    Id = groups.Instructor.Id,
+                    UserName = groups.Instructor.UserName
+                };
+                group.Instructors.Add(instructor);
             }
             else
             {
-                foreach (var instructor in context.Instructors)
+                //foreach (var instructor in context.Instructors)
+                //{
+                //    group.Instructors.Add(instructor.UserName);
+
+                //}
+                foreach (Instructor inst in context.Instructors)
                 {
-                    Group.Instructor.Add(instructor.UserName);
-
+                    instructor = new Instructor()
+                    {
+                        Id = inst.Id,
+                        UserName = inst.UserName
+                    };
+                    group.Instructors.Add(instructor);
                 }
-
             }
 
-            foreach (var s in Groups.Students)
+            foreach (Student s in groups.Students)
             {
-                Group.Students.Add(s.UserName);
+                group.Students.Add(s.UserName);
 
             }
 
-            return Ok(Group);
+            return Ok(group);
         }
 
 

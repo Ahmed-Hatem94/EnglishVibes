@@ -131,7 +131,7 @@ namespace EnglishVibes.Infrastructure.Migrations
 
                     b.HasIndex("InstructorId");
 
-                    b.ToTable("Groups");
+                    b.ToTable("Groups", (string)null);
                 });
 
             modelBuilder.Entity("EnglishVibes.Data.Models.GroupWeekDays", b =>
@@ -144,7 +144,7 @@ namespace EnglishVibes.Infrastructure.Migrations
 
                     b.HasKey("GroupId", "WeekDay");
 
-                    b.ToTable("GroupWeekDays");
+                    b.ToTable("GroupWeekDays", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>

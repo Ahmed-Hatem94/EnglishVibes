@@ -16,7 +16,7 @@ namespace EnglishVibes.Data.Models
         public string StudyPlan { get; set; } // private or group
         public bool ActiveStatus { get; set; }
         public DateTime? StartDate { get; set; }
-        public TimeSpan? TimeSlot { get; set; }
+        public TimeOnly? TimeSlot { get; set; }
         public Guid? InstructorId { get; set; }// Foreign Key
         public Instructor? Instructor { get; set; }  // Navigational property [One]
         public ICollection<GroupWeekDays>? GroupWeekDays { get; set; } = new List<GroupWeekDays>(); // Navigational property [Many]

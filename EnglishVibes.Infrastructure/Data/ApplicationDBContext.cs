@@ -1,4 +1,5 @@
 ﻿using EnglishVibes.Data.Models;
+using EnglishVibes.Infrastructure.Data.Helpers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -34,6 +35,12 @@ namespace EnglishVibes.Infrastructure.Data
             builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
             base.OnModelCreating(builder);
 
+        }
+        protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+        {
+            base.ConfigureConventions(configurationBuilder);
+            configurationBuilder.Properties<TimeOnly>()
+            .HaveConversion<TimeOnlyConverter, TimeOnlyComparer>();
         }
     }
 }

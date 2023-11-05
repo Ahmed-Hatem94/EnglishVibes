@@ -48,6 +48,7 @@ namespace EnglishVibes.API.Controllers
             {
                 ActiveStudentDTO activeStudent = new ActiveStudentDTO()
                 {
+                    Id = student.Id,
                     UserName = student.UserName,
                     Email = student.Email,
                     PhoneNumber = student.PhoneNumber,
@@ -70,6 +71,7 @@ namespace EnglishVibes.API.Controllers
             {
                 ActiveStudentDTO activeStudentDTO = new ActiveStudentDTO()
                 {
+                    Id = activeStudent.Id,
                     UserName = activeStudent.UserName,
                     Email = activeStudent.Email,
                     PhoneNumber = activeStudent.PhoneNumber,

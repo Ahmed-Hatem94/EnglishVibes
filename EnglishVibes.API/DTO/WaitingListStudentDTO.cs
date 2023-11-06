@@ -8,6 +8,7 @@ namespace EnglishVibes.Service.DTO
 {
     public class WaitingListStudentDTO
     {
+        public Guid Id { get; set; }
         public string UserName { get; set; }
         public string Email { get; set; }
         public string PhoneNumber { get; set; }

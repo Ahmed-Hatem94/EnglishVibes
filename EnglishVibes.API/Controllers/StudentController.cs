@@ -12,9 +12,9 @@ namespace EnglishVibes.API.Controllers
     public class StudentController : BaseAPIController
     {
         private readonly ApplicationDBContext context;
-        private readonly UserManager<ApplicationUser> userManager;
+        private readonly UserManager<Student> userManager;
 
-        public StudentController(ApplicationDBContext _context, UserManager<ApplicationUser> _userManager)
+        public StudentController(ApplicationDBContext _context, UserManager<Student> _userManager)
         {
             context = _context;
             userManager = _userManager;
@@ -29,6 +29,7 @@ namespace EnglishVibes.API.Controllers
             {
                 WaitingListStudentDTO waitingListStudent = new WaitingListStudentDTO()
                 {
+                    Id = student.Id,
                     UserName = student.UserName,
                     Email = student.Email,
                     PhoneNumber = student.PhoneNumber,
@@ -95,8 +96,8 @@ namespace EnglishVibes.API.Controllers
             //}
             if (ModelState.IsValid)
             {
-                //var student = await userManager.FindByIdAsync(id);
-                var student = await context.Students.FindAsync(id);
+                var student = await userManager.FindByIdAsync(id.ToString());
+                //var student = await context.Students.FindAsync(id);
                 if (student != null)
                 {
                     student.CurrentLevel = studentData.Level;

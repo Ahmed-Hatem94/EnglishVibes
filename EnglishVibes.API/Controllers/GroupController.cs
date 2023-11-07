@@ -2,6 +2,7 @@
 using Elfie.Serialization;
 using EnglishVibes.API.DTO;
 using EnglishVibes.Data.Models;
+using EnglishVibes.Data.Interfaces;
 using EnglishVibes.Infrastructure.Data;
 using EnglishVibes.Service.DTO;
 using Microsoft.AspNetCore.Http;
@@ -9,25 +10,31 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using EnglishVibes.Data;
 
 namespace EnglishVibes.API.Controllers
 {
 
     public class GroupController : BaseAPIController
     {
-
+        //private readonly IGenericRepository<Group> groupRepository;
+        private readonly IUnitOfWork unitOfWork;
         private readonly ApplicationDBContext context;
         private readonly IMapper _mapper;
         private readonly UserManager<ApplicationUser> userManager;
 
         public GroupController(
-            ApplicationDBContext _context,
+            //IGenericRepository<Group> groupRepository,
+            IUnitOfWork unitOfWork,
+            //ApplicationDBContext _context,
             IMapper mapper,
-            UserManager<ApplicationUser> _userManager)
+            UserManager<ApplicationUser> userManager)
         {
-            context = _context;
+            //this.groupRepository = groupRepository;
+            this.unitOfWork = unitOfWork;
+            //context = _context;
             _mapper = mapper;
-            userManager = _userManager;
+            this.userManager = userManager;
         }
         // what should i do :- 
 
@@ -35,11 +42,11 @@ namespace EnglishVibes.API.Controllers
         [HttpGet("inactive")]
         public async Task<ActionResult<IEnumerable<InActiveGroupDto>>> GetInActiveGroup()
         {
-
-            List<Group> inactiveGroups = await context.Groups
-                                              .Where(s => !s.ActiveStatus)
-                                              .Include(g => g.Students)
-                                              .ToListAsync();
+            List<Group> inactiveGroups = (List<Group>)await unitOfWork.Groups.FindAllAsync(g => !g.ActiveStatus, new[] { "Students" });
+            //List <Group> inactiveGroups = await context.Groups
+            //                                  .Where(s => !s.ActiveStatus)
+            //                                  .Include(g => g.Students)
+            //                                  .ToListAsync();
 
             var map = _mapper.Map<IEnumerable<Group>, IEnumerable<InActiveGroupDto>>(inactiveGroups);
 
@@ -50,92 +57,108 @@ namespace EnglishVibes.API.Controllers
         [HttpGet("active")]
         public async Task<ActionResult<IEnumerable<ActiveGroupDto>>> GetActiveGroup()
         {
-            var ActiveGroups = await context.Groups
-                                            .Where(s => s.ActiveStatus)
-                                            .Include(g => g.Students)
-                                            .Include(g => g.Instructor)
-                                            .Include(g => g.GroupWeekDays)
-                                            .ToListAsync();
-            var map = _mapper.Map<IEnumerable<Group>, IEnumerable<ActiveGroupDto>>(ActiveGroups);
+            List<Group> activeGroups = (List<Group>)await unitOfWork.Groups.FindAllAsync(g => g.ActiveStatus, new[] { "Students", "Instructor", "GroupWeekDays" });
+            //var activeGroups = await context.Groups
+            //                                .Where(s => s.ActiveStatus)
+            //                                .Include(g => g.Students)
+            //                                .Include(g => g.Instructor)
+            //                                .Include(g => g.GroupWeekDays)
+            //                                .ToListAsync();
+            var map = _mapper.Map<IEnumerable<Group>, IEnumerable<ActiveGroupDto>>(activeGroups);
 
             return Ok(map);
         }
 
         [HttpGet("{id}")]
-        public ActionResult<GroupDto> GetGroupById(int id)
+        public async Task<ActionResult<GroupDto>> GetGroupById(int id)
         {
-            var groups = context.Groups.Include(g => g.Students).Include(g => g.Instructor).FirstOrDefault(n => n.Id == id);
+            var group = await unitOfWork.Groups.FindAsync(g => g.Id == id, new[] { "Students", "Instructor" });
+            //var group = context.Groups.Include(g => g.Students).Include(g => g.Instructor).FirstOrDefault(n => n.Id == id);
             //   var map = _mapper.Map<IReadOnlyList<Group>, IReadOnlyList<ActiveGroupDto>>(ActiveGroups);
-            GroupDto group = new GroupDto()
+            GroupDto groupDto = new GroupDto()
             {
-                Id = groups.Id,
-                Level = groups.Level,
-                StudyPlan = groups.StudyPlan,
-                ActiveStatus = groups.ActiveStatus,
+                Id = group.Id,
+                Level = group.Level,
+                StudyPlan = group.StudyPlan,
+                ActiveStatus = group.ActiveStatus,
 
 
-                //  Students = groups.Students.Select(g => g.Id).ToList()
+                //  Students = group.Students.Select(g => g.Id).ToList()
 
             };
             Instructor instructor;
-            if (groups.ActiveStatus)
+            if (group.ActiveStatus)
             {
-                //group.Instructors.Add(groups.Instructor.UserName);
+                //groupDto.Instructors.Add(group.Instructor.UserName);
                 instructor = new Instructor()
                 {
-                    Id = groups.Instructor.Id,
-                    UserName = groups.Instructor.UserName
+                    Id = group.Instructor.Id,
+                    UserName = group.Instructor.UserName
                 };
-                group.Instructors.Add(instructor);
+                groupDto.Instructors.Add(instructor);
             }
             else
             {
                 //foreach (var instructor in context.Instructors)
                 //{
-                //    group.Instructors.Add(instructor.UserName);
+                //    groupDto.Instructors.Add(instructor.UserName);
 
                 //}
-                foreach (Instructor inst in context.Instructors)
+                var instructors = await unitOfWork.Instructors.GetAllAsync();
+                foreach (Instructor inst in instructors)
                 {
                     instructor = new Instructor()
                     {
                         Id = inst.Id,
                         UserName = inst.UserName
                     };
-                    group.Instructors.Add(instructor);
+                    groupDto.Instructors.Add(instructor);
                 }
             }
 
-            foreach (Student s in groups.Students)
+            foreach (Student s in group.Students)
             {
-                group.Students.Add(s.UserName);
+                groupDto.Students.Add(s.UserName);
 
             }
 
-            return Ok(group);
+            return Ok(groupDto);
         }
 
 
 
         //3-  Action Complete Group-Data [httpput] (startdate,instructor,timeslot) 
-        [HttpPost("{id}")]
-        public async Task<ActionResult> CompleteGroupData(int id, DateTime StartDate, Guid instructorId, TimeOnly TimeSlot, DayOfWeek d1, DayOfWeek d2)
+        [HttpPut("{id}")]
+        public async Task<ActionResult> CompleteGroupData(int id, CompleteGroupDataDTO groupDataDTO)
         {
-            var group = await context.Groups.FindAsync(id); // we will take group id from form
-            group.StartDate = StartDate;
-            group.InstructorId = instructorId;
-            group.TimeSlot = TimeSlot;
-            if (group.GroupWeekDays != null)
+            var group = await unitOfWork.Groups.FindAsync(x => x.Id == id, new[] { "GroupWeekDays" });
+            //var group = context.Groups.Include(g => g.GroupWeekDays)
+            //                    .FirstOrDefault(g => g.Id == id); // we will take group id from form
+            if (group.ActiveStatus)
             {
-                foreach (GroupWeekDays item in group.GroupWeekDays)
-                {
-                    group.GroupWeekDays.Remove(item);
-                }
+                return BadRequest();
+            }
+            group.StartDate = groupDataDTO.StartDate;
+            group.InstructorId = groupDataDTO.InstructorId;
+            group.TimeSlot = groupDataDTO.TimeSlot;
+            group.ActiveStatus = true;
+            unitOfWork.Complete();
+
+
+            //if (group.GroupWeekDays.Count != 0)
+            //{
+            //    group.GroupWeekDays.Clear();
+            //};
+
+            IEnumerable<GroupWeekDays> groupWeekDays = new List<GroupWeekDays>()
+            {
+                new GroupWeekDays {GroupId = id, WeekDay = (DayOfWeek)groupDataDTO.Day1 },
+                new GroupWeekDays {GroupId = id, WeekDay = (DayOfWeek)groupDataDTO.Day2 }
             };
-            group.GroupWeekDays.Add(new GroupWeekDays { GroupId = id, WeekDay = d1 });
-            group.GroupWeekDays.Add(new GroupWeekDays { GroupId = id, WeekDay = d2 });
-            context.Groups.Update(group);
-            await context.SaveChangesAsync();
+            await unitOfWork.GroupWeekDays.AddRangeAsync(groupWeekDays);
+
+            unitOfWork.Complete();
+
             return Ok();
         }
 

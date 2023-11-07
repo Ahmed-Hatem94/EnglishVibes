@@ -11,16 +11,17 @@ using EnglishVibes.Infrastructure.Seeder;
 using AutoMapper;
 using EnglishVibes.API.DTO;
 using EnglishVibes.API.Helpers;
+using EnglishVibes.Data.Interfaces;
+using EnglishVibes.Infrastructure.Repositories;
+using EnglishVibes.Data;
+using EnglishVibes.Infrastructure;
 
 namespace EnglishVibes.API
 {
     public class Program
     {
         public static async Task Main(string[] args)
-        {
-            // CORS Policy Name To Allow Cross-domain Requests
-            string corsPolicyName = "";
-
+        {            
             var builder = WebApplication.CreateBuilder(args);
 
 
@@ -84,7 +85,9 @@ namespace EnglishVibes.API
                 };
             });
 
-            
+
+            // CORS Policy Name To Allow Cross-domain Requests
+            string corsPolicyName = "";
             // CORS Service To Allow Cross-domain Requests
             builder.Services.AddCors(options =>
             {
@@ -96,6 +99,13 @@ namespace EnglishVibes.API
                         builder.AllowAnyHeader();
                     });
             });
+
+            #endregion
+
+            #region Register/Configure Custom Services
+
+            //builder.Services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 
             #endregion
 

@@ -12,16 +12,16 @@ namespace EnglishVibes.API.Controllers
     public class InstructorController : BaseAPIController
     {
         private readonly IUnitOfWork unitOfWork;
-        private readonly ApplicationDBContext context;
+        //private readonly ApplicationDBContext context;
         private readonly UserManager<Instructor> userManager;
 
         public InstructorController(
             IUnitOfWork unitOfWork,
-            ApplicationDBContext _context,
+            //ApplicationDBContext _context,
             UserManager<Instructor> _userManager)
         {
             this.unitOfWork = unitOfWork;
-            context = _context;
+            //context = _context;
             userManager = _userManager;
         }
 
@@ -100,14 +100,15 @@ namespace EnglishVibes.API.Controllers
         [HttpDelete]
         public async Task<ActionResult<Instructor>> RemoveInstructor(Guid id)
         {
-            var instructor = await context.Instructors.FindAsync(id);
+            var instructor = await userManager.FindByIdAsync(id.ToString());
+            //var instructor = await context.Instructors.FindAsync(id);
             if (instructor == null)
             {
                 return NotFound();
             }
             await userManager.DeleteAsync(instructor);
             //context.Instructors.Remove(instructor);
-            await context.SaveChangesAsync();
+            //await context.SaveChangesAsync();
             return Ok();
         }
     }

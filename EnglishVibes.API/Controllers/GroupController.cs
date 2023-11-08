@@ -19,9 +19,9 @@ namespace EnglishVibes.API.Controllers
     {
         //private readonly IGenericRepository<Group> groupRepository;
         private readonly IUnitOfWork unitOfWork;
-        private readonly ApplicationDBContext context;
+        //private readonly ApplicationDBContext context;
         private readonly IMapper _mapper;
-        private readonly UserManager<ApplicationUser> userManager;
+        //private readonly UserManager<ApplicationUser> userManager;
 
         public GroupController(
             //IGenericRepository<Group> groupRepository,
@@ -34,7 +34,7 @@ namespace EnglishVibes.API.Controllers
             this.unitOfWork = unitOfWork;
             //context = _context;
             _mapper = mapper;
-            this.userManager = userManager;
+            //this.userManager = userManager;
         }
         // what should i do :- 
 
@@ -128,7 +128,7 @@ namespace EnglishVibes.API.Controllers
 
 
         //3-  Action Complete Group-Data [httpput] (startdate,instructor,timeslot) 
-        [HttpPut("{id}")]
+        [HttpPost("{id}")]
         public async Task<ActionResult> CompleteGroupData(int id, CompleteGroupDataDTO groupDataDTO)
         {
             var group = await unitOfWork.Groups.FindAsync(x => x.Id == id, new[] { "GroupWeekDays" });
@@ -159,7 +159,7 @@ namespace EnglishVibes.API.Controllers
 
             unitOfWork.Complete();
 
-            return Ok();
+            return Ok(new { message = "success" });
         }
 
     }

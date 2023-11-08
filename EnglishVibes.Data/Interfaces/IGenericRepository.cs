@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using EnglishVibes.Data.Consts;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +18,9 @@ namespace EnglishVibes.Data.Interfaces
         void Delete(T entity);
         void DeleteRange(IEnumerable<T> entities);
         //Task SaveChangesAsync();
-        Task<T> FindAsync(Expression<Func<T, bool>> criteria, string[] includes = null);
-        Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> criteria, string[] includes = null);
+        Task<T> FindAsync(Expression<Func<T, bool>> criteria, string[] includes = null,
+            Expression<Func<T, object>> orderBy = null, string orderByDirection = OrderBy.Ascending);
+        Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> criteria, string[] includes = null,
+            Expression<Func<T, object>> orderBy = null, string orderByDirection = OrderBy.Ascending);
     }
 }

@@ -1,4 +1,5 @@
-﻿using EnglishVibes.Data.Models;
+﻿using EnglishVibes.Data;
+using EnglishVibes.Data.Models;
 using EnglishVibes.Infrastructure.Data;
 using EnglishVibes.Service.DTO;
 using Microsoft.AspNetCore.Http;
@@ -8,15 +9,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EnglishVibes.API.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
     public class InstructorController : BaseAPIController
     {
+        private readonly IUnitOfWork unitOfWork;
         private readonly ApplicationDBContext context;
-        private readonly UserManager<ApplicationUser> userManager;
+        private readonly UserManager<Instructor> userManager;
 
-        public InstructorController(ApplicationDBContext _context, UserManager<ApplicationUser> _userManager)
+        public InstructorController(
+            IUnitOfWork unitOfWork,
+            ApplicationDBContext _context,
+            UserManager<Instructor> _userManager)
         {
+            this.unitOfWork = unitOfWork;
             context = _context;
             userManager = _userManager;
         }
@@ -24,7 +28,8 @@ namespace EnglishVibes.API.Controllers
         [HttpGet("all")]
         public async Task<ActionResult<IEnumerable<InstructorDTO>>> GetAll()
         {
-            var instructors = await context.Instructors.ToListAsync();
+            var instructors = await userManager.Users.ToListAsync();
+            //var instructors = await context.Instructors.ToListAsync();
             List<InstructorDTO> instructorList = new List<InstructorDTO>();
             foreach (Instructor instructor in instructors)
             {
@@ -43,17 +48,25 @@ namespace EnglishVibes.API.Controllers
         [HttpGet("schedule/{id}")]
         public async Task<ActionResult<InstructorScheduleDTO>> GetInstructorSchedule(Guid id)
         {
-            var instructor = await context.Instructors
-                .Include(i => i.Groups)
-                .FirstOrDefaultAsync(i => i.Id == id);
-            InstructorScheduleDTO instructorSchedule = new InstructorScheduleDTO()
+            var instructor = await unitOfWork.Instructors.FindAsync(i => i.Id == id, new[] { "Groups" });
+            //var instructor = await context.Instructors
+            //    .Include(i => i.Groups)
+            //    .FirstOrDefaultAsync(i => i.Id == id);
+            if (instructor == null)
             {
-                UserName = instructor.UserName,
-                Email = instructor.Email,
-                PhoneNumber = instructor.PhoneNumber,
-                Groups = instructor.Groups
-            };
-            return instructorSchedule;
+                return NotFound();
+            }
+            else
+            { 
+                InstructorScheduleDTO instructorSchedule = new InstructorScheduleDTO()
+                {
+                    UserName = instructor.UserName,
+                    Email = instructor.Email,
+                    PhoneNumber = instructor.PhoneNumber,
+                    GroupIds = instructor.Groups.Select(g => g.Id).ToList()
+                };
+                return instructorSchedule;
+            }
         }
 
         [HttpPost]
@@ -92,7 +105,8 @@ namespace EnglishVibes.API.Controllers
             {
                 return NotFound();
             }
-            context.Instructors.Remove(instructor);
+            await userManager.DeleteAsync(instructor);
+            //context.Instructors.Remove(instructor);
             await context.SaveChangesAsync();
             return Ok();
         }

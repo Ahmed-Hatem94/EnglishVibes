@@ -1,4 +1,5 @@
 ﻿using EnglishVibes.Data;
+using EnglishVibes.Data.Consts;
 using EnglishVibes.Data.Models;
 using EnglishVibes.Infrastructure.Data;
 using EnglishVibes.Service.DTO;
@@ -13,16 +14,16 @@ namespace EnglishVibes.API.Controllers
     public class StudentController : BaseAPIController
     {
         private readonly IUnitOfWork unitOfWork;
-        private readonly ApplicationDBContext context;
+        //private readonly ApplicationDBContext context;
         private readonly UserManager<Student> userManager;
 
         public StudentController(
             IUnitOfWork unitOfWork,
-            ApplicationDBContext _context,
+            //ApplicationDBContext _context,
             UserManager<Student> _userManager)
         {
             this.unitOfWork = unitOfWork;
-            context = _context;
+            //context = _context;
             userManager = _userManager;
         }
 
@@ -107,7 +108,7 @@ namespace EnglishVibes.API.Controllers
             {
                 var student = await userManager.FindByIdAsync(id.ToString());
                 //var student = await context.Students.FindAsync(id);
-                if (student != null)
+                if (student != null && !student.ActiveStatus)
                 {
                     student.CurrentLevel = studentData.Level;
                     student.PayedAmount = studentData.PayedAmount;
@@ -122,18 +123,30 @@ namespace EnglishVibes.API.Controllers
                             ActiveStatus = false,
                             StudyPlan = student.StudyPlan
                         };
-                        await context.Groups.AddAsync(newGroup);
-                        await context.SaveChangesAsync();
-                        var createdGroup = await context.Groups.OrderBy(g => g.Id).LastOrDefaultAsync();
+                        await unitOfWork.Groups.AddAsync(newGroup);
+                        unitOfWork.Complete();
+                        //await context.Groups.AddAsync(newGroup);
+                        //await context.SaveChangesAsync();
+                        var createdGroup = await unitOfWork.Groups.FindAsync(g => true,
+                                                                                    null,
+                                                                                    g => g.Id,
+                                                                                    OrderBy.Descending);
+                        //var createdGroup = await context.Groups.OrderBy(g => g.Id).LastOrDefaultAsync();
                         student.GroupId = createdGroup.Id;
+                        unitOfWork.Complete();
                     }
                     else
                     {
-                        var matchingGroup = await context.Groups
-                                .SingleOrDefaultAsync(g =>
-                                g.StudyPlan == "group" &&
-                                g.Level == studentData.Level &&
-                                g.Students.Count < 4);
+                        var matchingGroup = await unitOfWork.Groups
+                                                            .FindAsync(g => g.StudyPlan == "group" &&
+                                                                        g.Level == studentData.Level &&
+                                                                        g.Students.Count < 4,
+                                                                        new[] { "Students" });
+                        //var matchingGroup = await context.Groups.Include(g => g.Students)
+                        //        .SingleOrDefaultAsync(g =>
+                        //        g.StudyPlan == "group" &&
+                        //        g.Level == studentData.Level &&
+                        //        g.Students.Count < 4);
                         if (matchingGroup == null)
                         {
                             Group newGroup = new Group()
@@ -142,20 +155,24 @@ namespace EnglishVibes.API.Controllers
                                 ActiveStatus = false,
                                 StudyPlan = student.StudyPlan
                             };
-                            await context.Groups.AddAsync(newGroup);
-                            await context.SaveChangesAsync();
-                            var createdGroup = await context.Groups.OrderBy(g => g.Id).LastOrDefaultAsync();
+                            await unitOfWork.Groups.AddAsync(newGroup);
+                            unitOfWork.Complete();
+                            //await context.Groups.AddAsync(newGroup);
+                            //await context.SaveChangesAsync();
+                            var createdGroup = await unitOfWork.Groups.FindAsync(g => true,
+                                                                                    null,
+                                                                                    g => g.Id, 
+                                                                                    OrderBy.Descending);
+                            //var createdGroup = await context.Groups.OrderBy(g => g.Id).LastOrDefaultAsync();
                             student.GroupId = createdGroup.Id;
+                            
                         }
                         else
                         {
                             student.GroupId = matchingGroup.Id;
-                            //if (matchingGroup.Students.Count > 3)
-                            //{
-                            //    matchingGroup.ActiveStatus = true;
-                            //}
-                            await context.SaveChangesAsync();
+                            //await context.SaveChangesAsync();
                         }
+                        unitOfWork.Complete();
                     }
                     return Ok(new { message = "success"});
                 }

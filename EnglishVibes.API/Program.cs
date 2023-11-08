@@ -57,8 +57,14 @@ namespace EnglishVibes.API
                     })
                     .AddRoles<IdentityRole<Guid>>() // Don't forget the generic datatype Guid
                     .AddEntityFrameworkStores<ApplicationDBContext>();
-            builder.Services.AddIdentityCore<Instructor>().AddEntityFrameworkStores<ApplicationDBContext>();
-            builder.Services.AddIdentityCore<Student>().AddEntityFrameworkStores<ApplicationDBContext>();
+            builder.Services.AddIdentityCore<Instructor>()
+                    .AddRoles<IdentityRole<Guid>>()
+                    .AddEntityFrameworkStores<ApplicationDBContext>();
+            builder.Services.AddIdentityCore<Student>()
+                    .AddRoles<IdentityRole<Guid>>()
+                    .AddEntityFrameworkStores<ApplicationDBContext>();
+
+            // Register AutoMapper
             builder.Services.AddAutoMapper(typeof(InActiveGroupMappingProfile));
             builder.Services.AddAutoMapper(typeof(ActiveGroupMappingProfile));
 

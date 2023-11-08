@@ -1,4 +1,5 @@
-﻿using EnglishVibes.Data.Interfaces;
+﻿using EnglishVibes.Data.Consts;
+using EnglishVibes.Data.Interfaces;
 using EnglishVibes.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -59,7 +60,8 @@ namespace EnglishVibes.Infrastructure.Repositories
         //    await dbContext.SaveChangesAsync();
         //}
 
-        public async Task<T> FindAsync(Expression<Func<T, bool>> criteria, string[] includes = null)
+        public async Task<T> FindAsync(Expression<Func<T, bool>> criteria, string[] includes = null,
+            Expression<Func<T, object>> orderBy = null, string orderByDirection = OrderBy.Ascending)
         {
             IQueryable<T> query = dbContext.Set<T>();
 
@@ -69,12 +71,21 @@ namespace EnglishVibes.Infrastructure.Repositories
                 {
                     query = query.Include(include);
                 }
+            }
+
+            if (orderBy != null)
+            {
+                if (orderByDirection == OrderBy.Ascending)
+                    query = query.OrderBy(orderBy);
+                else
+                    query = query.OrderByDescending(orderBy);
             }
 
             return await query.FirstOrDefaultAsync(criteria);
         }
 
-        public async Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> criteria, string[] includes = null)
+        public async Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> criteria, string[] includes = null,
+            Expression<Func<T, object>> orderBy = null, string orderByDirection = OrderBy.Ascending)
         {
             IQueryable<T> query = dbContext.Set<T>();
 
@@ -85,8 +96,17 @@ namespace EnglishVibes.Infrastructure.Repositories
                     query = query.Include(include);
                 }
             }
+            query = query.Where(criteria);
 
-            return await query.Where(criteria).ToListAsync();
+            if (orderBy != null)
+            {
+                if (orderByDirection == OrderBy.Ascending)
+                    query = query.OrderBy(orderBy);
+                else
+                    query = query.OrderByDescending(orderBy);
+            }
+
+            return await query.ToListAsync();
         }
     }
 }

@@ -12,6 +12,6 @@ namespace EnglishVibes.Service.DTO
         public string UserName { get; set; }
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
-        public ICollection<Group> Groups { get; set; }
+        public ICollection<int> GroupIds { get; set; }
     }
 }

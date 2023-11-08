@@ -1,4 +1,5 @@
-﻿using EnglishVibes.Data.Models;
+﻿using EnglishVibes.Data;
+using EnglishVibes.Data.Models;
 using EnglishVibes.Infrastructure.Data;
 using EnglishVibes.Service.DTO;
 using Microsoft.AspNetCore.Http;
@@ -11,11 +12,16 @@ namespace EnglishVibes.API.Controllers
     
     public class StudentController : BaseAPIController
     {
+        private readonly IUnitOfWork unitOfWork;
         private readonly ApplicationDBContext context;
         private readonly UserManager<Student> userManager;
 
-        public StudentController(ApplicationDBContext _context, UserManager<Student> _userManager)
+        public StudentController(
+            IUnitOfWork unitOfWork,
+            ApplicationDBContext _context,
+            UserManager<Student> _userManager)
         {
+            this.unitOfWork = unitOfWork;
             context = _context;
             userManager = _userManager;
         }
@@ -23,7 +29,8 @@ namespace EnglishVibes.API.Controllers
         [HttpGet("waitinglist")]
         public async Task<ActionResult<IEnumerable<WaitingListStudentDTO>>> GetWaitingList()
         {
-            var inactiveStudents = await context.Students.Where(s => !s.ActiveStatus).ToListAsync();
+            var inactiveStudents = await unitOfWork.Students.FindAllAsync(s => !s.ActiveStatus);
+            //var inactiveStudents = await context.Students.Where(s => !s.ActiveStatus).ToListAsync();
             List<WaitingListStudentDTO> waitingList = new List<WaitingListStudentDTO>();
             foreach (Student student in inactiveStudents)
             {
@@ -43,7 +50,8 @@ namespace EnglishVibes.API.Controllers
         [HttpGet("active/all")]
         public async Task<ActionResult<IEnumerable<ActiveStudentDTO>>> GetActiveStudents()
         {
-            var activeStudents = await context.Students.Where(s => s.ActiveStatus).ToListAsync();
+            var activeStudents = await unitOfWork.Students.FindAllAsync(s => s.ActiveStatus);
+            //var activeStudents = await context.Students.Where(s => s.ActiveStatus).ToListAsync();
             List<ActiveStudentDTO> activeStudentList = new List<ActiveStudentDTO>();
             foreach (Student student in activeStudents)
             {
@@ -67,7 +75,8 @@ namespace EnglishVibes.API.Controllers
         [HttpGet("active/{id}")]
         public async Task<ActionResult<ActiveStudentDTO>> GetActiveStudent(Guid id)
         {
-            var activeStudent = await context.Students.FirstOrDefaultAsync(s => s.ActiveStatus && s.Id == id);
+            var activeStudent = await unitOfWork.Students.FindAsync(s => s.ActiveStatus && s.Id == id);
+            //var activeStudent = await context.Students.FirstOrDefaultAsync(s => s.ActiveStatus && s.Id == id);
             if (activeStudent != null)
             {
                 ActiveStudentDTO activeStudentDTO = new ActiveStudentDTO()
@@ -103,7 +112,8 @@ namespace EnglishVibes.API.Controllers
                     student.CurrentLevel = studentData.Level;
                     student.PayedAmount = studentData.PayedAmount;
                     student.ActiveStatus = true;
-                    await context.SaveChangesAsync();
+                    await userManager.UpdateAsync(student);
+                    //await context.SaveChangesAsync();
                     if (student.StudyPlan == "private")
                     {
                         Group newGroup = new Group()
@@ -147,7 +157,7 @@ namespace EnglishVibes.API.Controllers
                             await context.SaveChangesAsync();
                         }
                     }
-                    return Ok();
+                    return Ok(new { message = "success"});
                 }
                 else
                     return BadRequest();

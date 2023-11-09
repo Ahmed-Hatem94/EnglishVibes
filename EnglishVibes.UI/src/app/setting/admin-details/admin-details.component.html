@@ -1,0 +1,155 @@
+
+<!-- Section: Design Block -->
+<section class="background-radial-gradient overflow-hidden">
+    <div class="container px-4 py-5 px-md-5 text-center text-lg-start my-5">
+      <div class="row gx-lg-5 align-items-center mb-5">
+        <div class="col-lg-6 mb-5 mb-lg-0" style="z-index: 10">
+          <h1
+            class="my-5 display-5 fw-bold ls-tight"
+            style="color: hsl(218, 81%, 95%)"  >
+            The First Step <br />
+            <span style="color: hsl(218, 81%, 75%)"> on your Way</span><br />
+            <span style="color: hsl(218, 81%, 95%)"> to learn English</span>
+          </h1>
+          <p class="mb-4 opacity-70" style="color: hsl(218, 81%, 85%)">
+            Your goal, your journey. Build confidence in your English skills
+            wherever you plan to use them. Our complete English language course is
+            clearly set out, with interactive vocab, grammar and cultural know-how
+            for all skill levels, in focused bite-sized lessons.
+          </p>
+        </div>
+        <div class="col-lg-6 mb-5 mb-lg-0 position-relative">
+          <div
+            id="radius-shape-1"
+            class="position-absolute rounded-circle shadow-5-strong"  ></div>
+          <div
+            id="radius-shape-2"
+            class="position-absolute shadow-5-strong"></div>
+          <div class="card bg-glass">
+            <div class="card-body px-4 py-5 px-md-5">
+              <form (ngSubmit)="handleregister(registerForm)"[formGroup]="registerForm" >
+  
+                <!-- UserName input -->
+                <div class="form-outline form-group mb-4">
+                  <label class="form-label" for="UserName">UserName</label>
+                  <input  formControlName="UserName" type="text" class="form-control" placeholder="Enter your Name"/>
+                    <div *ngIf="registerForm.get('UserName')?.errors && registerForm.get('UserName')?.touched" >
+                      <p *ngIf="registerForm.get('UserName')?.getError('required')" class="text-danger">Name is required</p>
+                      <p *ngIf="registerForm.get('UserName')?.getError('minlength')" class="text-danger" >Min Length is 3</p>
+                      <p *ngIf="registerForm.get('UserName')?.getError('maxlength')" class="text-danger">Max Length is 20</p>
+                    </div>
+                </div>
+  
+                   <!-- Age input -->
+                   <div class="form-outline form-group mb-4">
+                    <label class="form-label" for="Age">Age</label>
+                    <input formControlName="Age"  min="16" max="80" type="number"  class="form-control" placeholder="Enter your Age"/>
+                      <div *ngIf="registerForm.get('Age')?.errors && registerForm.get('Age')?.touched">
+                        <p *ngIf="registerForm.get('Age')?.getError('required')" class="text-danger">Age is required</p>
+                        <p *ngIf="registerForm.get('Age')?.getError('min')" class="text-danger">Age cant be less than 16 </p>
+                        <p *ngIf="registerForm.get('Age')?.getError('max')" class="text-danger">Age cant be more than 80</p>
+                    </div>
+  
+                  </div>
+  
+                <!-- Email input -->
+                <div class="form-outline form-group mb-4">
+                  <label class="form-label" for="Email">Email Address</label>
+                  <input formControlName="Email"type="email"class="form-control " placeholder="name@example.com" />
+                    <div  *ngIf="registerForm.get('Email')?.errors && registerForm.get('Email')?.touched">
+                      <p  *ngIf="registerForm.get('Email')?.getError('required')" class="text-danger">Email is required</p>
+                      <p *ngIf="registerForm.get('Email')?.getError('email')" class="text-danger">Email is not correct </p>
+                  </div>
+                </div>
+  
+                <!-- Password input -->
+                <div class="form-outline form-group mb-4">
+                  <label class="form-label" for="Password">Password</label>
+                  <input formControlName="Password"  type="password" class="form-control" placeholder="Enter your password"/>
+                    <div *ngIf="registerForm.get('Password')?.errors && registerForm.get('Password')?.touched">
+                      <p *ngIf="registerForm.get('Password')?.getError('required')" class="text-danger">password is required</p>
+                      <p *ngIf="registerForm.get('Password')?.getError('pattern')" class="text-danger">
+                        Passwords should contain :<br>
+                        Uppercase letters: A-Z. <br>
+                        Lowercase letters: a-z.
+                        Numbers: 0-9.
+                        Symbols:  #$%^&*()_-+=?/</p>
+                  
+                  </div>
+                </div>
+  
+                <!-- Confirm Password input -->
+                <div class="form-outline form-group mb-4">
+                  <label class="form-label" for="ConfirmPassword">Confirm Password</label>
+                  <input formControlName="ConfirmPassword" type="password" class="form-control" placeholder="Confirm"/>
+                    <div *ngIf="registerForm.get('ConfirmPassword')?.errors && registerForm.get('ConfirmPassword')?.touched">
+                      <p *ngIf="registerForm.get('ConfirmPassword')?.getError('required')" class="text-danger">password is required</p>
+                      <p *ngIf="registerForm.get('ConfirmPassword')?.getError('passwordmatch')" class="text-danger">password isn't Match</p>
+                  
+                  </div>
+                </div>
+  
+                <!-- Confirm Password input -->
+                <div class="form-outline form-group mb-4">
+                  <label class="form-label" for="PhoneNumber">Phone Number</label>
+                  <input  formControlName="PhoneNumber" type="text"class="form-control" placeholder="Enter your Number" />
+                    <div *ngIf="registerForm.get('PhoneNumber')?.errors && registerForm.get('PhoneNumber')?.touched">
+                      <p *ngIf="registerForm.get('PhoneNumber')?.getError('required')" class="text-danger">phone is required</p>
+                      <p *ngIf="registerForm.get('PhoneNumber')?.getError('pattern')" class="text-danger">phone is 011/012/015/010</p>
+              
+                  </div>
+                </div>
+               
+  
+                <!-- Checkbox -->
+                <div class="form-check d-flex justify-content-center mb-4">
+                  <input
+                    class="form-check-input me-2"
+                    type="checkbox"
+                    value=""
+                    id="form2Example33"
+                    checked />
+                  <label class="form-check-label" for="form2Example33">
+                    Subscribe to our newsletter
+                  </label>
+                </div>
+  
+                <!-- Submit button -->
+                <button [disabled]="registerForm.invalid || isloading"  type="submit" class="btn btn-primary btn-block mb-4">
+                  <i  *ngIf="isloading">Success</i> 
+                  <span *ngIf="!isloading">Sign up</span> 
+                </button>
+                
+                <!-- Register buttons -->
+                <div class="text-center">
+                  <p>or sign up with:</p>
+                  <a
+                    class="btn btn-link btn-floating mx-1"
+                    href="https://www.facebook.com/"  >
+                    <i class="fab fa-facebook-f"></i>
+                  </a>
+                  <a
+                    class="btn btn-link btn-floating mx-1"
+                    href="https://myaccount.google.com/" >
+                    <i class="fab fa-google"></i>
+                  </a>
+                  <a
+                    class="btn btn-link btn-floating mx-1"
+                    href="https://twitter.com/?lang=en">
+                    <i class="fab fa-twitter"></i>
+                  </a>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  
+  
+  
+  
+  
+  

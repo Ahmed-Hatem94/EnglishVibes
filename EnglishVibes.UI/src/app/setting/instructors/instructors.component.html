@@ -1,0 +1,54 @@
+
+
+
+<div class="row my-5">
+    <h3 class="fs-4 mb-3">INSTRUCTORS </h3>
+    <div class="col">
+      <table class="table bg-white rounded shadow-sm table-hover">
+        <thead>
+          <tr>
+            <th scope="col" width="50">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Group</th>
+            <th scope="col">Age</th>
+            <th scope="col">Phone</th>
+            <th scope="col">Email</th>
+            <th scope="col">Schedules</th>
+          </tr>
+          
+        </thead>
+        <tbody>
+          <tr *ngFor="let instruct of allinstrutors; let i = index">
+            <th scope="row">{{ i + 1 }}</th>
+            <td>{{ instruct.userName }}</td>
+            <td>{{ instruct.noOfGroups }}</td>
+            <td>{{ instruct.age }}</td>
+            <td>{{ instruct.phoneNumber }}</td>
+            <td>{{ instruct.email }}</td>
+            <td><button [routerLink]="['/setting/admin/instructDetalis', instruct.id]" class="custom-button"> Schedule</button></td>
+          </tr>
+                      
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+

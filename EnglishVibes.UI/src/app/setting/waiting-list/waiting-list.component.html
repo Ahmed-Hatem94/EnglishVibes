@@ -1,0 +1,29 @@
+<div class="row my-5">
+    <h3 class="fs-4 mb-3">Waiting list </h3>
+    <div class="col">
+        <table class="table bg-white rounded shadow-sm  table-hover">
+            <thead>
+                <tr>
+                    <th scope="col" width="50">#</th>
+                    <th scope="col">User Name</th>
+                    <th scope="col">Plan</th>
+                    <th scope="col"> Phone Number</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+
+                <tr *ngFor="let waite of WaitingList; let i = index">
+                    <th scope="row">{{i}}</th>
+                    <td>{{waite.userName}}</td>
+                    <td>{{waite.selectedStudyPlan}}</td>
+                    <td>{{waite.phoneNumber}}</td>
+                    <td><a [routerLink]="['/setting/admin/completeWaiting',waite.id]" class="btn btn-warning btn-sm" role="button" aria-pressed="true"> Complete Data</a></td>
+
+                </tr>
+                
+                
+            </tbody>
+        </table>
+    </div>
+</div>

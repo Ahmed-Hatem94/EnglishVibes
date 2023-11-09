@@ -1,0 +1,10 @@
+.custom-button {
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    border-radius: 5px;
+    width: 90px;
+    background-color: #0074d9;
+}
+

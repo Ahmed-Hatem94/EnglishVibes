@@ -1,0 +1,11 @@
+
+ .logo{
+    font-size: 35px;
+    color: #c72092;
+    cursor: pointer;
+    position: relative;
+}
+
+ .logo span{
+    color: #6c14d0;
+}

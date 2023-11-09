@@ -1,0 +1,22 @@
+<div class="p-4 bg-white rounded-3 shadow">
+    <h2 class="mb-3">Complete Information</h2>
+    <form [formGroup]="waitform" (ngSubmit)="sendStudent(waitform)">
+        <div class="form-outline form-group mb-4">
+            <label class="form-label" for="level">level</label>
+            <input formControlName="level" name="level" id="level" type="text" class="form-control mb-3"
+                [min]="formattedDate">
+            <p *ngIf="level?.errors?.['required'] && level?.touched" class="alert alert-danger">level Is
+                Required</p>
+        </div>
+        <div class="form-outline form-group mb-4">
+            <label class="form-label" for="payedAmount">payedAmount</label>
+            <input formControlName="payedAmount" name="payedAmount" id="payedAmount" type="number"
+                class="form-control mb-3" [min]="formattedDate">
+            <p *ngIf="payedAmount?.errors?.['required'] && payedAmount?.touched" class="alert alert-danger">payedAmount
+                Is
+                Required</p>
+
+        </div>
+        <button [disabled]="waitform.invalid" class="btn btn-primary">Complete</button>
+    </form>
+</div>

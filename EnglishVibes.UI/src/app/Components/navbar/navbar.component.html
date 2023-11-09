@@ -1,0 +1,53 @@
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">
+      <div class="logo">
+        <h1>English<span><strong>Vibes</strong></span></h1>
+      </div>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0 ">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" routerLink="/home"
+            routerLinkActive="bg-white text-global rounded-2 fw-500">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/courses" routerLinkActive="bg-white text-global rounded-2 fw-500">Courses</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/instructor"
+            routerLinkActive="bg-white text-global rounded-2 fw-500">Teachers</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/aboutus" routerLinkActive="bg-white text-global rounded-2 fw-500">About
+            Us</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/contact" routerLinkActive="bg-white text-global rounded-2 fw-500">Contact
+            Us</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link fw-bold" routerLink="/register" routerLinkActive="bg-white text-global rounded-2 fw-500"
+            *ngIf="!isLogged">Register</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link fw-bold" routerLink="/login" routerLinkActive="bg-white text-global rounded-2 fw-500"
+            *ngIf="!isLogged">Login</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-danger fw-bold cursor-pointer" *ngIf="isLogged" (click)="logOut()">LogOut</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" routerLink="setting" *ngIf="isAdmin">Admin</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

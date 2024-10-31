@@ -1,0 +1,27 @@
+services:
+  ui:
+    image: ui
+    build:
+      context: ./EnglishVibes.UI
+      dockerfile: Dockerfile
+    ports:
+      - "4200:4200"
+    depends_on:
+      - sql
+  api:
+    image: api
+    depends_on:
+      - sql
+    ports:
+      - "7220:7220"
+    build:
+      context: .
+      dockerfile: Dockerfile
+  sql:
+    image: "mcr.microsoft.com/mssql/server:2022-latest"
+    container_name: sql_server2022
+    ports: # not actually needed, because the two services are on the same network
+      - "1433:1433" 
+    environment:
+      - ACCEPT_EULA=y
+      - SA_PASSWORD=A&VeryComplex123Password

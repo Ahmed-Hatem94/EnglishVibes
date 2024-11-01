@@ -14,6 +14,7 @@ services:
       - sql
     ports:
       - "7220:7220"
+      - "44385:44385"
     build:
       context: .
       dockerfile: Dockerfile

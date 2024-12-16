@@ -101,11 +101,13 @@ namespace EnglishVibes.API
                 options.AddPolicy(corsPolicyName,
                     builder =>
                     {
-                        builder.AllowAnyOrigin();
-                        builder.AllowAnyMethod();
-                        builder.AllowAnyHeader();
+                        builder.WithOrigins("http://localhost:4200")
+                        .AllowAnyMethod()
+                        .AllowAnyHeader();
+                       
                     });
             });
+            
 
             #endregion
 

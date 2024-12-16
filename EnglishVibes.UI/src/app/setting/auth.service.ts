@@ -12,11 +12,11 @@ export class AuthService {
 
   register(userData:object):Observable<any>
   {
-return this._HttpClient.post('https://localhost:44385/api/Account/register/student',userData)
+return this._HttpClient.post('http://localhost:80/api/Account/register/student',userData)
   }
 
   login(userData:object):Observable<any>
   {
-return this._HttpClient.post('https://localhost:44385/api/Account/login',userData)
+return this._HttpClient.post('http://localhost:80/api/Account/login',userData)
   }
 }

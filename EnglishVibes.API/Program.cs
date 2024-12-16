@@ -23,6 +23,7 @@ namespace EnglishVibes.API
         public static async Task Main(string[] args)
         {            
             var builder = WebApplication.CreateBuilder(args);
+            builder.WebHost.UseUrls("http://0.0.0.0:80");
 
 
             #region Register/Configure Services

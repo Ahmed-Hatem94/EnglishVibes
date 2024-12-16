@@ -12,27 +12,27 @@ export class AdminService {
   userData = null;
 
   getInActiveGroup(): Observable<any> {
-    return this._HttpClient.get("https://localhost:44385/api/Group/inactive")
+    return this._HttpClient.get("http://localhost:80/api/Group/inactive")
   }
   getActiveGroup(): Observable<any> {
-    return this._HttpClient.get("https://localhost:44385/api/Group/active")
+    return this._HttpClient.get("http://localhost:80/api/Group/active")
   }
 
 
   getActiveStudent(): Observable<any> {
-    return this._HttpClient.get("https://localhost:44385/api/Student/active/all")
+    return this._HttpClient.get("http://localhost:80/api/Student/active/all")
 
   }
 
 
   getWaitingList(): Observable<any> {
-    return this._HttpClient.get("https://localhost:44385/api/Student/waitinglist")
+    return this._HttpClient.get("http://localhost:80/api/Student/waitinglist")
 
   }
 
   getDetailsStudent(id: any): Observable<any> {
 
-    return this._HttpClient.get(`https://localhost:44385/api/Student/active/${id}`)
+    return this._HttpClient.get(`http://localhost:80/api/Student/active/${id}`)
 
   }
 
@@ -47,26 +47,26 @@ export class AdminService {
 
 
   register(userData: object): Observable<any> {
-    return this._HttpClient.post('https://localhost:44385/api/Account/register/admin', userData)
+    return this._HttpClient.post('http://localhost:80/api/Account/register/admin', userData)
   }
 
 
 
   getinstructors(): Observable<any> {
-    return this._HttpClient.get("https://localhost:44385/api/Instructor/all")
+    return this._HttpClient.get("http://localhost:80/api/Instructor/all")
   }
   getinstructorsid(id: any): Observable<any> {
-    return this._HttpClient.get(`https://localhost:44385/api/Instructor/schedule/${id}`)
+    return this._HttpClient.get(`http://localhost:80/api/Instructor/schedule/${id}`)
   }
 
   getInActiveGroupById(id: any): Observable<any> {
-    return this._HttpClient.get(`https://localhost:44385/api/Group/${id}`)
+    return this._HttpClient.get(`http://localhost:80/api/Group/${id}`)
   }
 
   generateInActiveGroup(id: any, data: any): Observable<any> {
-    return this._HttpClient.post(`https://localhost:44385/api/Group/${id}`, data)
+    return this._HttpClient.post(`http://localhost:80/api/Group/${id}`, data)
   }
   generateInActiveStudent(id: any, data: any): Observable<any> {
-    return this._HttpClient.put(`https://localhost:44385/api/Student/${id}`, data)
+    return this._HttpClient.put(`http://localhost:80/api/Student/${id}`, data)
   }
 }

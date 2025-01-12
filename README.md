@@ -1,6 +1,3 @@
-Based on the gathered information, here is a suitable README file for the `testing` branch of the repository `Ahmed-Hatem94/EnglishVibes`:
-
----
 
 # EnglishVibes
 
@@ -20,6 +17,12 @@ A web application for an English-teaching agency to attract applicants and facil
 
 ## Setup Instructions
 
+## Docker Setup
+To build and run the Docker containers for the application, use the following commands:
+1. Build the Docker images: `docker-compose build`
+2. Run the Docker containers: `docker-compose up`
+
+
 ### Development Server
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
 
@@ -34,11 +37,6 @@ Run `ng test` to execute the unit tests via [Karma](http://karma-runner.github.i
 
 ### Running End-to-End Tests
 Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Docker Setup
-To build and run the Docker containers for the application, use the following commands:
-1. Build the Docker images: `docker-compose build`
-2. Run the Docker containers: `docker-compose up`
 
 ## Recent Changes
 - Added API port to Docker Compose.
